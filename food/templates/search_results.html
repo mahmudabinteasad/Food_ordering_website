@@ -1,0 +1,91 @@
+{% extends 'base_logged_in.html' %}
+{% load static %}
+
+{% block title %}Search Results - GrabNow{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="text-center mb-4">Search Results for "{{ query }}"</h2>
+
+    <!-- Display Restaurant Results -->
+    <h3 class="text-center mb-4">Restaurants</h3>
+    <div class="row">
+        {% for restaurant in restaurants %}
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    {% if restaurant.image %}
+                        <img src="{{ restaurant.image.url }}" class="card-img-top" alt="Restaurant Image">
+                    {% else %}
+                        <img src="{% static 'restaurant_images/steak2.jpg' %}" class="card-img-top" alt="Restaurant Image">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ restaurant.name }}</h5>
+                        <p class="card-text">{{ restaurant.address }}</p>
+                        <a href="{% url 'menu' restaurant.restaurant_id %}" class="btn btn-primary">View Menu</a>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <p class="text-center">No restaurants found.</p>
+        {% endfor %}
+    </div>
+
+    <!-- Display Food Item Results -->
+    <h3 class="text-center mb-4 mt-5">Food Items</h3>
+    <div class="row">
+        {% for food_item in food_items %}
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    {% if food_item.image %}
+                        <img src="{{ food_item.image.url }}" class="card-img-top" alt="Food Item Image">
+                    {% else %}
+                        <img src="{% static 'images/food-placeholder.jpg' %}" class="card-img-top" alt="Food Item Image">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ food_item.name }}</h5>
+                        <p class="card-text">{{ food_item.description }}</p>
+                        <p class="card-text">${{ food_item.price }}</p>
+                        <button class="btn btn-primary" data-toggle="modal" data-target="#foodItemModal{{ food_item.id }}">
+                            View Details
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal for food item -->
+            <div class="modal fade" id="foodItemModal{{ food_item.id }}" tabindex="-1" role="dialog" aria-labelledby="foodItemModalLabel{{ food_item.id }}" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="foodItemModalLabel{{ food_item.id }}">{{ food_item.name }}</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            {% if food_item.image %}
+                                <img src="{{ food_item.image.url }}" class="img-fluid mb-3" alt="Food Item Image">
+                            {% endif %}
+                            <p><strong>Price:</strong> ${{ food_item.price }}</p>
+                            <p><strong>Description:</strong> {{ food_item.description }}</p>
+                            <p><strong>Special Instructions:</strong> {{ food_item.special_instructions }}</p>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Quantity</span>
+                                </div>
+                                <input type="number" class="form-control" aria-label="Quantity" value="1">
+                            </div>
+                            <button class="btn btn-success">Add to Cart</button>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <p class="text-center">No food items found.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

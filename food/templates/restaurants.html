@@ -1,0 +1,24 @@
+{% extends 'base_logged_in.html' %}
+{% load static %}  <!-- Add this line to load the static template tag -->
+
+{% block title %}Browse Restaurants{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="text-center mb-4">Browse Restaurants</h2>
+    <div class="row">
+        {% for restaurant in restaurants %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <img src="{% static 'images/restaurant-placeholder.jpg' %}" class="card-img-top" alt="Restaurant Image">
+                <div class="card-body">
+                    <h5 class="card-title">{{ restaurant.name }}</h5>
+                    <p class="card-text">{{ restaurant.address }}</p>
+                    <a href="{% url 'menu' restaurant.restaurant_id %}" class="btn btn-primary">View Menu</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

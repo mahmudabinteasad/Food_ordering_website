@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}GrabNow - Online Food Ordering{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="jumbotron text-center">
+    <h1 class="display-4">Welcome to GrabNow</h1>
+    <p class="lead">Order your favorite meals from local restaurants with ease.</p>
+    <a href="{% url 'signup' %}" class="btn btn-primary btn-lg">Sign Up</a>
+    <a href="{% url 'signin' %}" class="btn btn-outline-secondary btn-lg">Sign In</a>
+</div>
+
+<!-- Key Features Section -->
+<div class="container my-5">
+    <h2 class="text-center mb-4">Key Features</h2>
+    <div class="row text-center">
+        <!-- Easy Ordering -->
+        <div class="col-md-3 mb-4">
+            <img src="{% static 'images/icon1.png' %}" alt="Easy Ordering" class="img-fluid mb-3">
+            <h3>Easy Ordering</h3>
+            <p>Quickly browse menus and place orders with just a few clicks. Our intuitive interface makes it simple to find and order your favorite dishes.</p>
+        </div>
+
+        <!-- Wide Selection -->
+        <div class="col-md-3 mb-4">
+            <img src="{% static 'images/icon2.png' %}" alt="Wide Selection" class="img-fluid mb-3">
+            <h3>Wide Selection</h3>
+            <p>Choose from a variety of local restaurants offering diverse cuisines. Explore new places or stick to your favorites, all in one place.</p>
+        </div>
+
+        <!-- Fast Delivery -->
+        <div class="col-md-3 mb-4">
+            <img src="{% static 'images/icon3.png' %}" alt="Fast Delivery" class="img-fluid mb-3">
+            <h3>Fast Delivery</h3>
+            <p>Experience quick and reliable delivery services. Your food will be at your doorstep before you know it, ensuring a seamless dining experience.</p>
+        </div>
+
+        <!-- Secure Payments -->
+        <div class="col-md-3 mb-4">
+            <img src="{% static 'images/icon4.png' %}" alt="Secure Payments" class="img-fluid mb-3">
+            <h3>Secure Payments</h3>
+            <p>Enjoy peace of mind with our secure payment options. Your transactions are protected, ensuring a safe and hassle-free ordering process.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Testimonials -->
+<div class="container bg-light p-5">
+    <h2 class="text-center mb-4">What Our Customers Say</h2>
+    <div class="row">
+        <div class="col-md-4 text-center">
+            <p>"Great service and fast delivery!" - John D.</p>
+        </div>
+        <div class="col-md-4 text-center">
+            <p>"Easy to use and reliable." - Jane S.</p>
+        </div>
+        <div class="col-md-4 text-center">
+            <p>"Love the variety of restaurants." - Mike L.</p>
+        </div>
+    </div>
+</div>
+
+<!-- How It Works -->
+<div class="container my-5">
+    <h2 class="text-center mb-4">How It Works</h2>
+    <div class="row text-center">
+        <div class="col-md-3 mb-4">
+            <img src="{% static 'images/step1.png' %}" alt="Browse Restaurants" class="img-fluid mb-3">
+            <h3>Browse Restaurants</h3>
+        </div>
+        <div class="col-md-3 mb-4">
+            <img src="{% static 'images/step2.png' %}" alt="Add Items to Cart" class="img-fluid mb-3">
+            <h3>Add Items to Cart</h3>
+        </div>
+        <div class="col-md-3 mb-4">
+            <img src="{% static 'images/step3.png' %}" alt="Checkout and Pay" class="img-fluid mb-3">
+            <h3>Checkout and Pay</h3>
+        </div>
+        <div class="col-md-3 mb-4">
+            <img src="{% static 'images/step4.png' %}" alt="Enjoy Your Meal" class="img-fluid mb-3">
+            <h3>Enjoy Your Meal</h3>
+        </div>
+    </div>
+</div>
+
+<!-- Special Offers -->
+<div class="container text-center my-5">
+    <h2>Special Offers</h2>
+    <p>Get 10% off your first order! Use code: <strong>WELCOME10</strong></p>
+</div>
+{% endblock %}

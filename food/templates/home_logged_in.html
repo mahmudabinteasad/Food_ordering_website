@@ -1,0 +1,68 @@
+{% extends 'base_logged_in.html' %}
+{% load static %}
+
+{% block title %}GrabNow - Browse Restaurants{% endblock %}
+
+{% block content %}
+<!-- Search Bar -->
+<div class="container mt-4 mb-4">
+    <form class="form-inline justify-content-center" action="{% url 'search' %}" method="get">
+        <input class="form-control mr-sm-2" type="search" placeholder="Search by restaurant name or food item" aria-label="Search" name="q" style="width: 300px;">
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+    </form>
+</div>
+
+<!-- Featured Restaurants Section -->
+<div class="featured-section" style="background-color: #f8f9fa; padding: 20px;">
+    <div class="container">
+        <h2 class="text-center" style="color: black;">🔥 Featured Restaurants</h2>
+        <p class="text-center mb-4" style="color: black;">Don't miss today's best offers!</p>
+        <div class="row">
+            {% for deal in featured_restaurants %}
+                <div class="col-md-3 mb-4">
+                    <div class="card restaurant-card">
+                        {% if deal.image %}
+                            <img src="{{ deal.image.url }}" class="card-img-top" alt="Featured Restaurant">
+                        {% else %}
+                            <img src="{% static 'images/featured.jpg' %}" class="card-img-top" alt="Featured Restaurant">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ deal.name }}</h5>
+                            <p class="card-text">{{ deal.address }}</p>
+                            <a href="{% url 'menu' deal.restaurant_id %}" class="btn btn-danger btn-sm">Order Now</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- All Restaurants Section -->
+<div class="restaurant-list-section">
+    <div class="container">
+        <h2 class="text-center" style="color: black;">Explore Restaurants</h2>
+        <div class="row" id="restaurant-list">
+            {% for restaurant in all_restaurants %}
+                <div class="col-md-4 mb-4">
+                    <div class="card restaurant-card">
+                        {% if restaurant.image %}
+                            <img src="{{ restaurant.image.url }}" class="card-img-top" alt="Restaurant Image">
+                        {% else %}
+                            <img src="{% static 'restaurant_images/steak2.jpg' %}" class="card-img-top" alt="Restaurant Image">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ restaurant.name }}</h5>
+                            <p class="card-text">{{ restaurant.address }}</p>
+                            <a href="{% url 'menu' restaurant.restaurant_id %}" class="btn btn-primary">View Menu</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-4">
+            <button class="btn btn-primary" id="load-more-btn">Load More</button>
+        </div>
+    </div>
+</div>
+{% endblock %}

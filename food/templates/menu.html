@@ -1,0 +1,95 @@
+{% extends 'base_logged_in.html' %}
+{% load static %}
+
+{% block title %}Menu - {{ restaurant.name }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Restaurant Header Info -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <img src="{{ restaurant.image.url }}" class="img-fluid" alt="Restaurant Photo">
+        </div>
+        <div class="col-md-8">
+            <h1>{{ restaurant.name }}</h1>
+            <p><strong>Address:</strong> {{ restaurant.address }}</p>
+            <p><strong>Delivery Charge:</strong> ${{ restaurant.delivery_charge }}</p>
+            <p><strong>Minimum Order:</strong> ${{ restaurant.min_order }}</p>
+            <p><strong>Open Until:</strong> {{ restaurant.open_until }}</p>
+            <button class="btn btn-outline-info mt-2" data-toggle="modal" data-target="#restaurantMoreInfoModal">
+                More Info
+            </button>
+        </div>
+    </div>
+
+    <!-- More Info Modal -->
+    <div class="modal fade" id="restaurantMoreInfoModal" tabindex="-1" role="dialog" aria-labelledby="moreInfoLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{{ restaurant.name }} - More Info</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>Address:</strong> {{ restaurant.address }}</p>
+                    <p><strong>Open Until:</strong> {{ restaurant.open_until }}</p>
+                    <p><strong>Weekly Schedule:</strong></p>
+                    <ul>
+                        <li>Monday: 10:00 AM - 10:00 PM</li>
+                        <li>Tuesday: 10:00 AM - 10:00 PM</li>
+                        <li>Wednesday: 10:00 AM - 10:00 PM</li>
+                        <li>Thursday: 10:00 AM - 10:00 PM</li>
+                        <li>Friday: 10:00 AM - 11:00 PM</li>
+                        <li>Saturday: 10:00 AM - 11:00 PM</li>
+                        <li>Sunday: Closed</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Menu Section -->
+    <h2>Menu</h2>
+
+    <!-- Search Bar -->
+    <form method="GET" class="form-inline mb-4">
+        <input type="text" name="q" class="form-control mr-2" placeholder="Search for food..." value="{{ request.GET.q }}">
+        <button type="submit" class="btn btn-secondary">Search</button>
+    </form>
+
+    <!-- Food Items -->
+    <div class="row">
+        {% for item in food_items %}
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="row no-gutters">
+                    <div class="col-md-4">
+                        <img src="{{ item.image.url }}" class="card-img" alt="{{ item.name }}">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ item.name }}</h5>
+                            <p class="card-text">{{ item.description|truncatechars:100 }}</p>
+                            <p><strong>Price:</strong> ${{ item.price }}</p>
+                            <!-- Form for selecting quantity -->
+                            <form method="POST" action="{% url 'add_to_cart' item.food_id %}">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <label for="quantity">Quantity:</label>
+                                    <input type="number" name="quantity" id="quantity" class="form-control" value="1" min="1">
+                                </div>
+                                <button type="submit" class="btn btn-primary">Add to Cart</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p>No food items available in this restaurant.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

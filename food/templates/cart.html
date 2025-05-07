@@ -1,0 +1,44 @@
+{% extends 'base_logged_in.html' %}
+{% block title %}Your Cart{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Your Cart</h2>
+    {% if cart_items %}
+        <ul class="list-group">
+            {% for item in cart_items %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        {{ item.food.name }} (x{{ item.quantity }})
+                        <div class="btn-group btn-group-sm mt-1" role="group">
+                            <!-- Add -->
+                            <form method="POST" action="{% url 'add_to_cart' item.food.food_id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-success">+</button>
+                            </form>
+
+                            <!-- Remove -->
+                            <form method="POST" action="{% url 'remove_from_cart' item.food.food_id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-warning">-</button>
+                            </form>
+
+                            <!-- Delete -->
+                            <form method="POST" action="{% url 'delete_from_cart' item.food.food_id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
+                        </div>
+                    </div>
+                    <span>${{ item.food.price|floatformat:2 }}</span>
+                </li>
+            {% endfor %}
+        </ul>
+        <div class="mt-3">
+            <h4>Total: ${{ total|floatformat:2 }}</h4>
+        </div>
+    {% else %}
+        <p>Your cart is empty.</p>
+    {% endif %}
+</div>
+{% endblock %}
