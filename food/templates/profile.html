@@ -38,5 +38,59 @@
             {% endfor %}
         </div>
     </div>
+
+    <!-- Payment Methods -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5>Payment Methods</h5>
+        </div>
+        <div class="card-body">
+            {% for payment in payment_methods %}
+            <div class="payment-method mb-3">
+                <p><strong>Card Number:</strong> **** **** **** {{ payment.card_number|slice:"-4:" }}</p>
+                <p><strong>Card Holder:</strong> {{ payment.card_holder }}</p>
+                <p><strong>Expiry Date:</strong> {{ payment.expiry_date }}</p>
+                <p><strong>Default:</strong> {{ payment.is_default|yesno:"Yes,No" }}</p>
+            </div>
+            {% empty %}
+            <p>No payment methods found.</p>
+            {% endfor %}
+            <a href="{% url 'add_payment_method' %}" class="btn btn-primary">Add Payment Method</a>
+        </div>
+    </div>
+
+    <!-- Delivery Addresses -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5>Delivery Addresses</h5>
+        </div>
+        <div class="card-body">
+            {% for address in delivery_addresses %}
+            <div class="address mb-3">
+                <p><strong>Address:</strong> {{ address.address }}</p>
+                <p><strong>City:</strong> {{ address.city }}</p>
+                <p><strong>State:</strong> {{ address.state }}</p>
+                <p><strong>Zip Code:</strong> {{ address.zip_code }}</p>
+                <p><strong>Default:</strong> {{ address.is_default|yesno:"Yes,No" }}</p>
+            </div>
+            {% empty %}
+            <p>No delivery addresses found.</p>
+            {% endfor %}
+            <a href="{% url 'add_delivery_address' %}" class="btn btn-primary">Add Delivery Address</a>
+        </div>
+    </div>
+
+    <!-- Preferences -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5>Preferences</h5>
+        </div>
+        <div class="card-body">
+            <p><strong>Notifications Enabled:</strong> {{ preferences.notifications_enabled|yesno:"Yes,No" }}</p>
+            <p><strong>Language:</strong> {{ preferences.language }}</p>
+            <p><strong>Theme:</strong> {{ preferences.theme }}</p>
+            <a href="{% url 'update_preferences' %}" class="btn btn-primary">Update Preferences</a>
+        </div>
+    </div>
 </div>
 {% endblock %}

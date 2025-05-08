@@ -3,7 +3,7 @@ from django.db import connection
 from django.contrib.auth.hashers import check_password, make_password
 from django.contrib import messages
 from .forms import SignUpForm
-from .models import Restaurant, FoodItem, Cart, Customer, Order, OrderItem
+from .models import Restaurant, FoodItem, Cart, Customer, Order, OrderItem, PaymentMethod, DeliveryAddress, Preferences
 
 def home(request):
     if 'customer_id' in request.session:
@@ -207,6 +207,15 @@ def profile(request):
     # Fetch order history
     orders = Order.objects.filter(customer=customer).order_by('-timestamp')
 
+    # Fetch payment methods
+    payment_methods = PaymentMethod.objects.filter(customer=customer)
+
+    # Fetch delivery addresses
+    delivery_addresses = DeliveryAddress.objects.filter(customer=customer)
+
+    # Fetch preferences
+    preferences = Preferences.objects.filter(customer=customer).first()
+
     with connection.cursor() as cursor:
         cursor.execute("SELECT username FROM food_customer WHERE user_id = %s", [customer_id])
         username = cursor.fetchone()[0]
@@ -214,7 +223,10 @@ def profile(request):
     return render(request, 'profile.html', {
         'username': username,
         'customer': customer,
-        'orders': orders
+        'orders': orders,
+        'payment_methods': payment_methods,
+        'delivery_addresses': delivery_addresses,
+        'preferences': preferences
     })
 
 def update_profile(request):
@@ -233,6 +245,74 @@ def update_profile(request):
         return redirect('profile')
 
     return render(request, 'update_profile.html', {'customer': customer})
+
+def add_payment_method(request):
+    if 'customer_id' not in request.session:
+        return redirect('signin')
+
+    customer_id = request.session['customer_id']
+    customer = get_object_or_404(Customer, user_id=customer_id)
+
+    if request.method == 'POST':
+        card_number = request.POST.get('card_number')
+        card_holder = request.POST.get('card_holder')
+        expiry_date = request.POST.get('expiry_date')
+
+        PaymentMethod.objects.create(
+            customer=customer,
+            card_number=card_number,
+            card_holder=card_holder,
+            expiry_date=expiry_date
+        )
+
+        messages.success(request, 'Payment method added successfully!')
+        return redirect('profile')
+
+    return render(request, 'add_payment_method.html', {'customer': customer})
+
+def add_delivery_address(request):
+    if 'customer_id' not in request.session:
+        return redirect('signin')
+
+    customer_id = request.session['customer_id']
+    customer = get_object_or_404(Customer, user_id=customer_id)
+
+    if request.method == 'POST':
+        address = request.POST.get('address')
+        city = request.POST.get('city')
+        state = request.POST.get('state')
+        zip_code = request.POST.get('zip_code')
+
+        DeliveryAddress.objects.create(
+            customer=customer,
+            address=address,
+            city=city,
+            state=state,
+            zip_code=zip_code
+        )
+
+        messages.success(request, 'Delivery address added successfully!')
+        return redirect('profile')
+
+    return render(request, 'add_delivery_address.html', {'customer': customer})
+
+def update_preferences(request):
+    if 'customer_id' not in request.session:
+        return redirect('signin')
+
+    customer_id = request.session['customer_id']
+    customer = get_object_or_404(Customer, user_id=customer_id)
+    preferences, created = Preferences.objects.get_or_create(customer=customer)
+
+    if request.method == 'POST':
+        preferences.notifications_enabled = request.POST.get('notifications_enabled', 'off') == 'on'
+        preferences.language = request.POST.get('language', preferences.language)
+        preferences.theme = request.POST.get('theme', preferences.theme)
+        preferences.save()
+        messages.success(request, 'Preferences updated successfully!')
+        return redirect('profile')
+
+    return render(request, 'update_preferences.html', {'preferences': preferences})
 
 def order_details(request, order_id):
     if 'customer_id' not in request.session:

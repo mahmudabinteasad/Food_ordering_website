@@ -7,6 +7,30 @@ class Customer(models.Model):
     password = models.CharField(max_length=100)
     phone = models.CharField(max_length=20)
 
+class PaymentMethod(models.Model):
+    payment_id = models.AutoField(primary_key=True)
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    card_number = models.CharField(max_length=16)
+    card_holder = models.CharField(max_length=100)
+    expiry_date = models.CharField(max_length=5)
+    is_default = models.BooleanField(default=False)
+
+class DeliveryAddress(models.Model):
+    address_id = models.AutoField(primary_key=True)
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    address = models.TextField()
+    city = models.CharField(max_length=100)
+    state = models.CharField(max_length=100)
+    zip_code = models.CharField(max_length=20)
+    is_default = models.BooleanField(default=False)
+
+class Preferences(models.Model):
+    preference_id = models.AutoField(primary_key=True)
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    notifications_enabled = models.BooleanField(default=True)
+    language = models.CharField(max_length=50, default='English')
+    theme = models.CharField(max_length=50, default='Light')
+
 class Restaurant(models.Model):
     restaurant_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)

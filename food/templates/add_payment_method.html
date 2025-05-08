@@ -1,0 +1,27 @@
+{% extends 'base_logged_in.html' %}
+{% load static %}
+
+{% block title %}Add Payment Method{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="text-center mb-4">Add Payment Method</h2>
+
+    <form method="post" action="{% url 'add_payment_method' %}">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="card_number">Card Number</label>
+            <input type="text" class="form-control" id="card_number" name="card_number" required>
+        </div>
+        <div class="form-group">
+            <label for="card_holder">Card Holder</label>
+            <input type="text" class="form-control" id="card_holder" name="card_holder" required>
+        </div>
+        <div class="form-group">
+            <label for="expiry_date">Expiry Date</label>
+            <input type="text" class="form-control" id="expiry_date" name="expiry_date" placeholder="MM/YY" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Payment Method</button>
+    </form>
+</div>
+{% endblock %}
