@@ -1,12 +1,42 @@
 {% extends 'base_logged_in.html' %}
+{% load static %}
 
-{% block title %}Your Profile{% endblock %}
+{% block title %}Profile{% endblock %}
 
 {% block content %}
-<div class="container my-5">
+<div class="container">
     <h2 class="text-center mb-4">Your Profile</h2>
-    <!-- User profile information will be displayed here -->
-    <p>Welcome, [User Name]!</p>
-    <!-- Add more profile details as needed -->
+
+    <!-- User Information -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5>Personal Information</h5>
+        </div>
+        <div class="card-body">
+            <p><strong>Name:</strong> {{ customer.username }}</p>
+            <p><strong>Email:</strong> {{ customer.email }}</p>
+            <p><strong>Phone:</strong> {{ customer.phone }}</p>
+            <a href="{% url 'update_profile' %}" class="btn btn-primary">Edit Profile</a>
+        </div>
+    </div>
+
+    <!-- Order History -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5>Order History</h5>
+        </div>
+        <div class="card-body">
+            {% for order in orders %}
+            <div class="order-item mb-3">
+                <p><strong>Order #{{ order.order_id }}:</strong> {{ order.timestamp }}</p>
+                <p><strong>Total:</strong> ${{ order.total_price }}</p>
+                <p><strong>Status:</strong> {{ order.status }}</p>
+                <a href="{% url 'order_details' order.order_id %}" class="btn btn-info">View Details</a>
+            </div>
+            {% empty %}
+            <p>No orders found.</p>
+            {% endfor %}
+        </div>
+    </div>
 </div>
 {% endblock %}

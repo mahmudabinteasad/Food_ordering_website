@@ -1,0 +1,27 @@
+{% extends 'base_logged_in.html' %}
+{% load static %}
+
+{% block title %}Order Details{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="text-center mb-4">Order Details</h2>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5>Order #{{ order.order_id }}</h5>
+        </div>
+        <div class="card-body">
+            <p><strong>Timestamp:</strong> {{ order.timestamp }}</p>
+            <p><strong>Total:</strong> ${{ order.total_price }}</p>
+            <p><strong>Status:</strong> {{ order.status }}</p>
+            <h6>Items:</h6>
+            <ul>
+                {% for item in order_items %}
+                <li>{{ item.food.name }} - Quantity: {{ item.quantity }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

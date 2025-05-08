@@ -3,7 +3,7 @@ from django.db import connection
 from django.contrib.auth.hashers import check_password, make_password
 from django.contrib import messages
 from .forms import SignUpForm
-from .models import Restaurant, FoodItem, Cart, Customer
+from .models import Restaurant, FoodItem, Cart, Customer, Order, OrderItem
 
 def home(request):
     if 'customer_id' in request.session:
@@ -202,11 +202,49 @@ def profile(request):
         return redirect('signin')
 
     customer_id = request.session['customer_id']
+    customer = get_object_or_404(Customer, user_id=customer_id)
+
+    # Fetch order history
+    orders = Order.objects.filter(customer=customer).order_by('-timestamp')
+
     with connection.cursor() as cursor:
         cursor.execute("SELECT username FROM food_customer WHERE user_id = %s", [customer_id])
         username = cursor.fetchone()[0]
 
-    return render(request, 'profile.html', {'username': username})
+    return render(request, 'profile.html', {
+        'username': username,
+        'customer': customer,
+        'orders': orders
+    })
+
+def update_profile(request):
+    if 'customer_id' not in request.session:
+        return redirect('signin')
+
+    customer_id = request.session['customer_id']
+    customer = get_object_or_404(Customer, user_id=customer_id)
+
+    if request.method == 'POST':
+        customer.username = request.POST.get('username', customer.username)
+        customer.email = request.POST.get('email', customer.email)
+        customer.phone = request.POST.get('phone', customer.phone)
+        customer.save()
+        messages.success(request, 'Profile updated successfully!')
+        return redirect('profile')
+
+    return render(request, 'update_profile.html', {'customer': customer})
+
+def order_details(request, order_id):
+    if 'customer_id' not in request.session:
+        return redirect('signin')
+
+    order = get_object_or_404(Order, order_id=order_id)
+    order_items = OrderItem.objects.filter(order=order)
+
+    return render(request, 'order_details.html', {
+        'order': order,
+        'order_items': order_items
+    })
 
 def logout(request):
     if 'customer_id' in request.session:
