@@ -133,10 +133,19 @@ def cart(request):
         return redirect('signin')
 
     customer_id = request.session['customer_id']
-    customer = Customer.objects.get(user_id=customer_id)
+    customer = get_object_or_404(Customer, user_id=customer_id)
 
-    cart_items = Cart.objects.filter(customer=customer).select_related('food')
+    # Fetch cart items with related food and restaurant information
+    cart_items = Cart.objects.filter(customer=customer).select_related('food__restaurant')
+
+    # Calculate total price for all items in the cart
     total = sum(item.food.price * item.quantity for item in cart_items)
+
+    # Calculate total number of items in the cart
+    total_items = sum(item.quantity for item in cart_items)
+
+    # Fetch delivery addresses
+    delivery_addresses = DeliveryAddress.objects.filter(customer=customer)
 
     with connection.cursor() as cursor:
         cursor.execute("SELECT username FROM food_customer WHERE user_id = %s", [customer_id])
@@ -144,9 +153,118 @@ def cart(request):
 
     return render(request, 'cart.html', {
         'username': username,
+        'customer': customer,
         'cart_items': cart_items,
-        'total': total
+        'total': total,
+        'delivery_addresses': delivery_addresses,
+        'total_items': total_items  # Pass total_items to the template
     })
+
+def place_order(request):
+    if 'customer_id' not in request.session:
+        messages.error(request, 'You need to be logged in to place an order.')
+        return redirect('signin')
+
+    if request.method == 'POST':
+        try:
+            print("Place Order view called")  # Debugging
+            print("POST data:", request.POST)  # Debugging
+
+            customer_id = request.session['customer_id']
+            customer = get_object_or_404(Customer, user_id=customer_id)
+
+            # Get selected cart item IDs
+            selected_items = request.POST.getlist('selected_items')
+            print("Selected items:", selected_items)  # Debugging
+
+            if not selected_items:
+                messages.error(request, 'No items selected for order.')
+                return redirect('cart')
+
+            # Fetch only selected cart items
+            cart_items = Cart.objects.filter(customer=customer, food__food_id__in=selected_items).select_related('food')
+
+            if not cart_items.exists():
+                messages.error(request, 'No valid items selected for order.')
+                return redirect('cart')
+
+            # Calculate total price
+            total_price = sum(item.food.price * item.quantity for item in cart_items)
+
+            # Get selected delivery address
+            selected_address_id = request.POST.get('delivery_address')
+            print("Selected address ID:", selected_address_id)  # Debugging
+
+            if not selected_address_id:
+                messages.error(request, 'No delivery address selected.')
+                return redirect('cart')
+
+            selected_address = get_object_or_404(DeliveryAddress, address_id=selected_address_id)
+
+            # Create order
+            with transaction.atomic():
+                order = Order.objects.create(
+                    customer=customer,
+                    status='Pending',
+                    total_price=total_price,
+                    delivery_address=selected_address.address
+                )
+
+                # Add ordered items to OrderItem and delete only those from cart
+                for item in cart_items:
+                    OrderItem.objects.create(
+                        order=order,
+                        food=item.food,
+                        quantity=item.quantity
+                    )
+                    item.delete()  # ✅ Only this ordered item is removed from the cart
+
+            messages.success(request, 'Order placed successfully!')
+            return redirect('order_confirmation', order_id=order.order_id)
+
+        except Exception as e:
+            print("Error placing order:", e)  # Debugging
+            messages.error(request, f'An error occurred while placing the order: {str(e)}')
+            return redirect('cart')
+
+    return redirect('cart')
+
+def delete_cart_items(request):
+    if request.method == 'POST':
+        item_ids = request.POST.getlist('item_ids[]')
+        customer_id = request.session.get('customer_id')
+
+        if customer_id:
+            Cart.objects.filter(food_id__in=item_ids, customer_id=customer_id).delete()
+            return JsonResponse({'status': 'success'})
+        else:
+            return JsonResponse({'status': 'error', 'message': 'User not logged in'}, status=400)
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
+
+def order_confirmation(request, order_id):
+    if 'customer_id' not in request.session:
+        return redirect('signin')
+
+    order = get_object_or_404(Order, order_id=order_id)
+    order_items = OrderItem.objects.filter(order=order)
+
+    return render(request, 'order_confirmation.html', {
+        'order': order,
+        'order_items': order_items
+    })
+
+def confirm_order(request, order_id):
+    if 'customer_id' not in request.session:
+        return redirect('signin')
+
+    order = get_object_or_404(Order, order_id=order_id)
+
+    # Update the order status to 'Confirmed'
+    order.status = 'Confirmed'
+    order.save()
+
+    messages.success(request, 'Order confirmed successfully!')
+    return redirect('order_confirmation', order_id=order.order_id)
 
 def add_to_cart(request, food_id):
     if 'customer_id' not in request.session:
@@ -163,6 +281,7 @@ def add_to_cart(request, food_id):
         cart_item.save()
     else:
         Cart.objects.create(customer=customer, food=food, quantity=1)
+        messages.success(request, 'Added to cart successfully!')
 
     return redirect(request.META.get('HTTP_REFERER', 'cart'))
 

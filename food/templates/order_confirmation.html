@@ -1,0 +1,28 @@
+{% extends 'base_logged_in.html' %}
+{% block title %}Order Confirmation{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Order Confirmation</h2>
+    <div class="card">
+        <div class="card-header">
+            <h5>Order #{{ order.order_id }}</h5>
+        </div>
+        <div class="card-body">
+            <p><strong>Status:</strong> {{ order.status }}</p>
+            <p><strong>Total Price:</strong> ${{ order.total_price|floatformat:2 }}</p>
+            <p><strong>Delivery Address:</strong> {{ order.delivery_address }}</p>
+            <h6>Items:</h6>
+            <ul>
+                {% for item in order_items %}
+                <li>{{ item.food.name }} - Quantity: {{ item.quantity }}</li>
+                {% endfor %}
+            </ul>
+            <form method="POST" action="{% url 'confirm_order' order.order_id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary mt-3">Confirm Order</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

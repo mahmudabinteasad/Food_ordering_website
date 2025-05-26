@@ -2,43 +2,204 @@
 {% block title %}Your Cart{% endblock %}
 
 {% block content %}
+<!-- Your Cart Section -->
 <div class="container mt-4">
     <h2>Your Cart</h2>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
     {% if cart_items %}
-        <ul class="list-group">
-            {% for item in cart_items %}
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <div>
-                        {{ item.food.name }} (x{{ item.quantity }})
-                        <div class="btn-group btn-group-sm mt-1" role="group">
-                            <!-- Add -->
-                            <form method="POST" action="{% url 'add_to_cart' item.food.food_id %}">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-success">+</button>
-                            </form>
+        <form method="POST" action="{% url 'place_order' %}">
+            {% csrf_token %}
+            <ul class="list-group">
+                {% for item in cart_items %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap" data-restaurant-name="{{ item.food.restaurant.name }}">
+                        <div class="col-md-8">
+                            <div class="d-flex align-items-center">
+                                <input type="checkbox" name="selected_items" value="{{ item.food.food_id }}" class="mr-2" onchange="updateTotal()">
+                                <strong>{{ item.food.name }}</strong> (x{{ item.quantity }})
+                            </div>
+                            <p>Restaurant: {{ item.food.restaurant.name }}</p>
+                            <div class="btn-group btn-group-sm mt-2" role="group">
+                                <!-- Add -->
+                                <form method="POST" action="{% url 'add_to_cart' item.food.food_id %}" class="d-inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-success">+</button>
+                                </form>
 
-                            <!-- Remove -->
-                            <form method="POST" action="{% url 'remove_from_cart' item.food.food_id %}">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-warning">-</button>
-                            </form>
+                                <!-- Remove -->
+                                <form method="POST" action="{% url 'remove_from_cart' item.food.food_id %}" class="d-inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-warning">-</button>
+                                </form>
 
-                            <!-- Delete -->
-                            <form method="POST" action="{% url 'delete_from_cart' item.food.food_id %}">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-danger">Delete</button>
-                            </form>
+                                <!-- Delete -->
+                                <form method="POST" action="{% url 'delete_from_cart' item.food.food_id %}" class="d-inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
+                            </div>
                         </div>
-                    </div>
-                    <span>${{ item.food.price|floatformat:2 }}</span>
-                </li>
-            {% endfor %}
-        </ul>
-        <div class="mt-3">
-            <h4>Total: ${{ total|floatformat:2 }}</h4>
-        </div>
+                        <div class="col-md-3 text-right">
+                            <span class="item-price">${{ item.food.price|floatformat:2 }}</span>
+                            <input type="hidden" class="item-quantity" value="{{ item.quantity }}">
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+
+            <div class="mt-3">
+                <h4>Total: $<span id="totalPrice">0.00</span></h4>
+            </div>
+
+            {% if delivery_addresses %}
+                <div class="form-group mt-3">
+                    <label for="delivery_address">Select Delivery Address:</label>
+                    <select class="form-control" id="delivery_address" name="delivery_address" required>
+                        {% for address in delivery_addresses %}
+                            <option value="{{ address.address_id }}">{{ address.address }}, {{ address.city }}, {{ address.state }}, {{ address.zip_code }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            {% endif %}
+
+            <button type="button" class="btn btn-primary mt-3" data-toggle="modal" data-target="#orderSummaryModal">Place Order</button>
+        </form>
     {% else %}
         <p>Your cart is empty.</p>
     {% endif %}
 </div>
+
+<!-- Order Summary Modal -->
+<div class="modal fade" id="orderSummaryModal" tabindex="-1" role="dialog" aria-labelledby="orderSummaryModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="orderSummaryModalLabel">Order Summary</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h6>Restaurant: <span id="restaurantName">Loading...</span></h6>
+                <ul id="orderItems">
+                    <!-- Order items will be added here dynamically -->
+                </ul>
+                <h6>Total Amount: $<span id="modalTotalPrice">0.00</span></h6>
+
+                <!-- Simulated Card Payment Input -->
+                <div class="form-group">
+                    <label for="card-element">Credit or debit card</label>
+                    <input type="text" id="card-element" class="form-control" placeholder="Enter card number">
+                    <div id="card-errors" role="alert" class="text-danger mt-1"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="submitPayment">Confirm Order</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script>
+    function updateTotal() {
+        let total = 0;
+        const checkboxes = document.querySelectorAll('input[name="selected_items"]:checked');
+        checkboxes.forEach(checkbox => {
+            const item = checkbox.closest('li');
+            const price = parseFloat(item.querySelector('.item-price').textContent.replace('$', ''));
+            const quantity = parseInt(item.querySelector('.item-quantity').value);
+            total += price * quantity;
+        });
+        document.getElementById('totalPrice').textContent = total.toFixed(2);
+        document.getElementById('modalTotalPrice').textContent = total.toFixed(2);
+    }
+
+    function updateOrderSummary() {
+        const checkboxes = document.querySelectorAll('input[name="selected_items"]:checked');
+        const orderItemsList = document.getElementById('orderItems');
+        orderItemsList.innerHTML = '';
+
+        let restaurantName = '';
+
+        checkboxes.forEach(checkbox => {
+            const item = checkbox.closest('li');
+            const name = item.querySelector('strong').textContent;
+            const quantity = item.querySelector('.item-quantity').value;
+            const price = item.querySelector('.item-price').textContent;
+
+            const restaurant = item.getAttribute('data-restaurant-name') || 'Unknown Restaurant';
+            restaurantName = restaurant;
+
+            const listItem = document.createElement('li');
+            listItem.textContent = `${name} (x${quantity}) - ${price}`;
+            orderItemsList.appendChild(listItem);
+        });
+
+        document.getElementById('restaurantName').textContent = restaurantName;
+    }
+
+    function submitOrder() {
+        document.querySelector('form').submit();
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        updateTotal();
+        updateOrderSummary();
+
+        document.querySelectorAll('input[name="selected_items"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function () {
+                updateTotal();
+                updateOrderSummary();
+            });
+        });
+    });
+
+    document.getElementById("submitPayment").addEventListener("click", function () {
+        const cardInput = document.getElementById("card-element").value.trim();
+
+        if (cardInput === "") {
+            document.getElementById("card-errors").textContent = "Please enter your credit card information.";
+        } else {
+            document.getElementById("card-errors").textContent = "";
+            alert("Order confirmed. Enjoy your food!");
+
+            // Get the selected item IDs
+            const selectedItems = Array.from(document.querySelectorAll('input[name="selected_items"]:checked')).map(checkbox => checkbox.value);
+
+            // Send an AJAX request to delete the selected items from the cart
+            fetch('/delete_cart_items/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: 'item_ids=' + encodeURIComponent(JSON.stringify(selectedItems))
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    // Reload the page or update the cart UI to reflect the changes
+                    window.location.reload();
+                } else {
+                    console.error('Error:', data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+
+            $('#orderSummaryModal').modal('hide');
+        }
+    });
+</script>
+
 {% endblock %}

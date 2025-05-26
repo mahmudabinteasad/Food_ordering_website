@@ -2,6 +2,7 @@
 
 from django.urls import path
 from . import views
+from .views import delete_cart_items
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -22,4 +23,8 @@ urlpatterns = [
     path('add_delivery_address/', views.add_delivery_address, name='add_delivery_address'),
     path('update_preferences/', views.update_preferences, name='update_preferences'),
     path('order_details/<int:order_id>/', views.order_details, name='order_details'),
+    path('place_order/', views.place_order, name='place_order'),
+    path('order_confirmation/<int:order_id>/', views.order_confirmation, name='order_confirmation'),
+    path('confirm_order/<int:order_id>/', views.confirm_order, name='confirm_order'),
+    path('delete_cart_items/', delete_cart_items, name='delete_cart_items'),
 ]

@@ -5,12 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}GrabNow{% endblock %}</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
     <style>
         body {
             padding-top: 56px;
         }
         .navbar {
             margin-bottom: 20px;
+        }
+        footer {
+            background-color: #343a40;
+            color: white;
+            padding: 20px 0;
+            margin-top: 20px;
+        }
+        footer a {
+            color: white;
+        }
+        footer a:hover {
+            color: #adb5bd;
         }
     </style>
 </head>
@@ -46,6 +59,51 @@
         {% block content %}
         {% endblock %}
     </div>
+
+    <!-- Conditionally Render Footer -->
+    {% if request.resolver_match.url_name != 'signin' and request.resolver_match.url_name != 'signup' %}
+    <footer class="text-center">
+        <div class="container">
+            <div class="row">
+                <!-- About Us -->
+                <div class="col-md-4">
+                    <h5>About Us</h5>
+                    <p>Welcome to Food Nest, your go-to platform for ordering delicious meals from local restaurants.</p>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="col-md-4">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="{% url 'home' %}">Home</a></li>
+                        <li><a href="{% url 'restaurant_list' %}">Restaurants</a></li>
+                        <li><a href="{% url 'signup' %}">Sign Up</a></li>
+                        <li><a href="{% url 'signin' %}">Sign In</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact Info -->
+                <div class="col-md-4">
+                    <h5>Contact Info</h5>
+                    <p>Email: contact@foodnest.com</p>
+                    <p>Phone: (123) 456-7890</p>
+                    <div class="social-links">
+                        <a href="#" class="mx-2"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="mx-2"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="mx-2"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Copyright -->
+            <div class="row mt-3">
+                <div class="col-12">
+                    <p class="mb-0">&copy; 2023 Food Nest. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    {% endif %}
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>

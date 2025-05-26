@@ -1,15 +1,144 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}GrabNow - Online Food Ordering{% endblock %}
+{% block title %}Food Nest - Online Food Ordering{% endblock %}
 
 {% block content %}
 <!-- Hero Section -->
-<div class="jumbotron text-center">
+<div class="jumbotron text-center" style="background-color: #a68b68; color: white;">
     <h1 class="display-4">Welcome to Food Nest</h1>
     <p class="lead">Order your favorite meals from local restaurants with ease.</p>
-    <a href="{% url 'signup' %}" class="btn btn-primary btn-lg">Sign Up</a>
-    <a href="{% url 'signin' %}" class="btn btn-outline-secondary btn-lg">Sign In</a>
+    <a href="{% url 'signup' %}" class="btn btn-primary btn-lg" style="background-color: #588b88; border-color: #4ECDC4;">Sign Up</a>
+    <a href="{% url 'signin' %}" class="btn btn-outline-secondary btn-lg" style="background-color: transparent; border-color: #4ECDC4; color: white;">Sign In</a>
+</div>
+
+<style>
+    .jumbotron {
+        background-color: #a68b68;
+        color: white;
+        padding: 2rem 1rem;
+        margin-bottom: 2rem;
+        border-radius: 0.3rem;
+    }
+
+    .btn-primary {
+        background-color: #4ECDC4;
+        border-color: #4ECDC4;
+    }
+
+    .btn-outline-secondary {
+        background-color: transparent;
+        border-color: #4ECDC4;
+        color: white;
+    }
+
+    .btn-outline-secondary:hover {
+        background-color: #4ECDC4;
+        color: white;
+    }
+</style>
+
+<!-- Food Carousel Section -->
+<div class="container my-5">
+    <h2 class="text-center mb-4">Grab Yum Dishes!</h2>
+    <div id="foodCarousel" class="carousel slide" data-ride="carousel" data-interval="2000">
+        <div class="carousel-inner">
+            <!-- Carousel Items -->
+            <div class="carousel-item active">
+                <img loading="lazy" src="{% static 'images/food1.webp' %}" class="d-block mx-auto" style="width: 900px; height: 450px; object-fit: cover;" alt="Spicy Mutton Dish from Local Restaurant">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Spicy Mutton</h5>
+                    <p>Juicy and flavorful, a must-try!</p>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img loading="lazy" src="{% static 'images/food2.avif' %}" class="d-block mx-auto" style="width: 900px; height: 450px; object-fit: cover;" alt="Delicious Sushi Loaded with toppings">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Delicious Sushi</h5>
+                    <p>Loaded with toppings and a fresh taste.</p>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img loading="lazy" src="{% static 'images/food3.jpg' %}" class="d-block mx-auto" style="width: 900px; height: 450px; object-fit: cover;" alt="Dish 3">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Fresh Salad</h5>
+                    <p>Healthy and refreshing, perfect for any meal.</p>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img loading="lazy" src="{% static 'images/food4.jpg' %}" class="d-block mx-auto" style="width: 900px; height: 450px; object-fit: cover;" alt="Dish 4">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Burger</h5>
+                    <p>Classic burger with a twist, a crowd favorite!</p>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img loading="lazy" src="{% static 'images/food5.webp' %}" class="d-block mx-auto" style="width: 900px; height: 450px; object-fit: cover;" alt="Dish 5">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Pizza</h5>
+                    <p>Cheesy and delicious, perfect for sharing.</p>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img loading="lazy" src="{% static 'images/food6.webp' %}" class="d-block mx-auto" style="width: 900px; height: 450px; object-fit: cover;" alt="Dish 6">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Chicken Fried Rice</h5>
+                    <p>Savory and satisfying, a complete meal.</p>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img loading="lazy" src="{% static 'images/food7.jpg' %}" class="d-block mx-auto" style="width: 900px; height: 450px; object-fit: cover;" alt="Dish 7">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Pasta</h5>
+                    <p>Creamy and rich, a comfort food classic.</p>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img loading="lazy" src="{% static 'images/food8.jpg' %}" class="d-block mx-auto" style="width: 900px; height: 450px; object-fit: cover;" alt="Dish 8">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Chow Mein</h5>
+                    <p>Stir-fried noodles with a burst of flavors.</p>
+                </div>
+            </div>
+        </div>
+        <!-- Carousel Controls -->
+        <a class="carousel-control-prev" href="#foodCarousel" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#foodCarousel" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>
+    </div>
+</div>
+
+<!-- How It Works -->
+<div class="container my-5">
+    <h2 class="text-center mb-4">How It Works</h2>
+    <div class="row text-center">
+        <div class="col-md-3 mb-4">
+            <img src="{% static 'images/step1.png' %}" alt="Browse Restaurants" class="img-fluid mb-3">
+            <h3>Browse Restaurants</h3>
+        </div>
+        <div class="col-md-3 mb-4">
+            <img src="{% static 'images/step2.png' %}" alt="Add Items to Cart" class="img-fluid mb-3">
+            <h3>Add Items to Cart</h3>
+        </div>
+        <div class="col-md-3 mb-4">
+            <img src="{% static 'images/step3.png' %}" alt="Checkout and Pay" class="img-fluid mb-3">
+            <h3>Checkout and Pay</h3>
+        </div>
+        <div class="col-md-3 mb-4">
+            <img src="{% static 'images/step4.png' %}" alt="Enjoy Your Meal" class="img-fluid mb-3">
+            <h3>Enjoy Your Meal</h3>
+        </div>
+    </div>
+</div>
+
+<!-- Image Before Key Features Section -->
+<div class="container my-5 text-center">
+    <img src="{% static 'images/why.png' %}" alt="Delicious Food Banner" class="img-fluid rounded" style="max-width: 100%; height: auto;">
 </div>
 
 <!-- Key Features Section -->
@@ -48,40 +177,54 @@
 
 <!-- Testimonials -->
 <div class="container bg-light p-5">
-    <h2 class="text-center mb-4">What Our Customers Say</h2>
-    <div class="row">
-        <div class="col-md-4 text-center">
-            <p>"Great service and fast delivery!" - John D.</p>
+    <h2 class="text-center mb-5">What Our Customers Say</h2>
+    <div class="row g-4 justify-content-center">
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0 p-4">
+                <p class="mb-2"><i class="fas fa-quote-left me-2 text-primary"></i>Great service and fast delivery!</p>
+                <p class="font-italic text-end mb-0">- John D.</p>
+            </div>
         </div>
-        <div class="col-md-4 text-center">
-            <p>"Easy to use and reliable." - Jane S.</p>
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0 p-4">
+                <p class="mb-2"><i class="fas fa-quote-left me-2 text-primary"></i>Easy to use and reliable.</p>
+                <p class="font-italic text-end mb-0">- Jane S.</p>
+            </div>
         </div>
-        <div class="col-md-4 text-center">
-            <p>"Love the variety of restaurants." - Mike L.</p>
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0 p-4">
+                <p class="mb-2"><i class="fas fa-quote-left me-2 text-primary"></i>Love the variety of restaurants.</p>
+                <p class="font-italic text-end mb-0">- Mike L.</p>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- How It Works -->
-<div class="container my-5">
-    <h2 class="text-center mb-4">How It Works</h2>
-    <div class="row text-center">
-        <div class="col-md-3 mb-4">
-            <img src="{% static 'images/step1.png' %}" alt="Browse Restaurants" class="img-fluid mb-3">
-            <h3>Browse Restaurants</h3>
+<!-- Trusted by Thousands -->
+<div class="container my-5 text-center">
+    <h2 class="mb-4">Trusted by Thousands of Food Lovers</h2>
+    <div class="row">
+        <div class="col-md-4">
+            <h3>50K+</h3>
+            <p>Orders Delivered</p>
         </div>
-        <div class="col-md-3 mb-4">
-            <img src="{% static 'images/step2.png' %}" alt="Add Items to Cart" class="img-fluid mb-3">
-            <h3>Add Items to Cart</h3>
+        <div class="col-md-4">
+            <h3>300+</h3>
+            <p>Partner Restaurants</p>
         </div>
-        <div class="col-md-3 mb-4">
-            <img src="{% static 'images/step3.png' %}" alt="Checkout and Pay" class="img-fluid mb-3">
-            <h3>Checkout and Pay</h3>
+        <div class="col-md-4">
+            <h3>98%</h3>
+            <p>Customer Satisfaction</p>
         </div>
-        <div class="col-md-3 mb-4">
-            <img src="{% static 'images/step4.png' %}" alt="Enjoy Your Meal" class="img-fluid mb-3">
-            <h3>Enjoy Your Meal</h3>
-        </div>
+    </div>
+</div>
+
+<!-- Call to Action Banner -->
+<div class="container-fluid py-4" style="background-color: #fceabb;">
+    <div class="container text-center">
+        <h3>Ready to Feast?</h3>
+        <p>Sign up today and enjoy mouth-watering meals delivered fast!</p>
+        <a href="{% url 'signup' %}" class="btn btn-success">Join Now</a>
     </div>
 </div>
 
