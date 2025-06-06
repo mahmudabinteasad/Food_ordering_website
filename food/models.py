@@ -45,6 +45,7 @@ class Restaurant(models.Model):
     min_order = models.DecimalField(max_digits=5, decimal_places=2, default=0.0)
     open_until = models.TimeField(blank=True, null=True)
     weekly_schedule = models.TextField(blank=True, null=True)
+    is_approved = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name

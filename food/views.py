@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.db import connection, transaction
 from django.contrib.auth.hashers import check_password, make_password
 from django.contrib import messages
-from .forms import SignUpForm
+from .forms import SignUpForm, RestaurantForm, FoodItemForm
 from django.db.models import Q
 from .models import Restaurant, FoodItem, Cart, Customer, Order, OrderItem, PaymentMethod, DeliveryAddress, Preferences
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -448,3 +448,35 @@ def logout(request):
     if 'customer_id' in request.session:
         del request.session['customer_id']
     return redirect('home')
+
+@login_required
+def add_restaurant(request):
+    if request.method == 'POST':
+        form = RestaurantForm(request.POST, request.FILES)
+        if form.is_valid():
+            restaurant = form.save(commit=False)
+            restaurant.save()
+            return redirect('add_food_items', restaurant_id=restaurant.restaurant_id)
+    else:
+        form = RestaurantForm()
+    return render(request, 'add_restaurant.html', {'form': form})
+
+@login_required
+def add_food_items(request, restaurant_id):
+    restaurant = Restaurant.objects.get(restaurant_id=restaurant_id)
+    if request.method == 'POST':
+        form = FoodItemForm(request.POST, request.FILES)
+        if form.is_valid():
+            food_item = form.save(commit=False)
+            food_item.restaurant = restaurant
+            food_item.save()
+            return redirect('submit_for_approval', restaurant_id=restaurant.restaurant_id)
+    else:
+        form = FoodItemForm()
+    return render(request, 'add_food_items.html', {'form': form, 'restaurant': restaurant})
+
+@login_required
+def submit_for_approval(request, restaurant_id):
+    restaurant = Restaurant.objects.get(restaurant_id=restaurant_id)
+    # Here you can add logic to notify admin for approval
+    return render(request, 'submit_for_approval.html', {'restaurant': restaurant})
