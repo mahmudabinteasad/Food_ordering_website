@@ -38,12 +38,15 @@
     </div>
 </div>
 
+<!-- Gap after Featured Restaurants Section -->
+<div style="margin-bottom: 50px;"></div>
+
 <!-- All Restaurants Section -->
 <div class="restaurant-list-section">
     <div class="container">
         <h2 class="text-center" style="color: black;">Explore Restaurants</h2>
         <div class="row" id="restaurant-list">
-            {% for restaurant in all_restaurants %}
+            {% for restaurant in restaurants_page %}
                 <div class="col-md-4 mb-4">
                     <div class="card restaurant-card">
                         {% if restaurant.image %}
@@ -61,8 +64,38 @@
             {% endfor %}
         </div>
         <div class="text-center mt-4">
-            <button class="btn btn-primary" id="load-more-btn">Load More</button>
+            {% if restaurants_page.has_next %}
+                <button class="btn btn-primary" id="load-more-btn" data-page="{{ restaurants_page.next_page_number }}">Load More</button>
+            {% endif %}
         </div>
     </div>
 </div>
+
+<!-- JavaScript to Handle Load More Button -->
+<script>
+document.getElementById('load-more-btn').addEventListener('click', function() {
+    const button = this;
+    const page = button.getAttribute('data-page');
+
+    fetch(`?page=${page}`)
+        .then(response => response.text())
+        .then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const newRestaurants = doc.querySelectorAll('#restaurant-list .col-md-4');
+            const loadMoreButton = doc.getElementById('load-more-btn');
+
+            newRestaurants.forEach(restaurant => {
+                document.getElementById('restaurant-list').appendChild(restaurant);
+            });
+
+            if (loadMoreButton) {
+                button.setAttribute('data-page', loadMoreButton.getAttribute('data-page'));
+            } else {
+                button.style.display = 'none'; // Hide the button if there are no more pages
+            }
+        })
+        .catch(error => console.error('Error:', error));
+});
+</script>
 {% endblock %}
