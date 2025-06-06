@@ -464,15 +464,29 @@ def add_restaurant(request):
 @login_required
 def add_food_items(request, restaurant_id):
     restaurant = Restaurant.objects.get(restaurant_id=restaurant_id)
+
     if request.method == 'POST':
-        form = FoodItemForm(request.POST, request.FILES)
-        if form.is_valid():
-            food_item = form.save(commit=False)
-            food_item.restaurant = restaurant
-            food_item.save()
-            return redirect('submit_for_approval', restaurant_id=restaurant.restaurant_id)
+        # Handle multiple food items
+        names = request.POST.getlist('name')
+        prices = request.POST.getlist('price')
+        descriptions = request.POST.getlist('description')
+        images = request.FILES.getlist('image')
+
+        for name, price, description, image in zip(names, prices, descriptions, images):
+            FoodItem.objects.create(
+                restaurant=restaurant,
+                name=name,
+                price=price,
+                description=description,
+                image=image
+            )
+
+        messages.success(request, 'Food items added successfully!')
+        return redirect('submit_for_approval', restaurant_id=restaurant.restaurant_id)
+
     else:
         form = FoodItemForm()
+
     return render(request, 'add_food_items.html', {'form': form, 'restaurant': restaurant})
 
 @login_required

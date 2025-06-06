@@ -2,10 +2,36 @@
 
 {% block content %}
 <h2>Add Food Items for {{ restaurant.name }}</h2>
-<form method="post" enctype="multipart/form-data">
+<form id="foodItemsForm" method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Add Food Item</button>
+    <div id="form-container">
+        <div class="food-item-form">
+            {{ form.as_p }}
+        </div>
+    </div>
+    <button type="button" id="add-more" class="btn btn-secondary">Add Another Food Item</button>
+    <button type="submit" class="btn btn-primary">Submit All Food Items</button>
 </form>
-<a href="{% url 'submit_for_approval' restaurant.restaurant_id %}">Finish and Submit for Approval</a>
+<a href="{% url 'submit_for_approval' restaurant.restaurant_id %}" class="btn btn-success">Finish and Submit for Approval</a>
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const container = document.getElementById('form-container');
+    const addButton = document.getElementById('add-more');
+    const formTemplate = document.querySelector('.food-item-form').innerHTML;
+
+    addButton.addEventListener('click', function() {
+        const newForm = document.createElement('div');
+        newForm.className = 'food-item-form';
+        newForm.innerHTML = formTemplate.replace(/id_(\w+)_\d+/g, function(match, p1) {
+            // Increment the index for new form fields
+            const totalForms = document.querySelectorAll('.food-item-form').length;
+            return `id_${p1}_${totalForms}`;
+        });
+        container.appendChild(newForm);
+    });
+});
+</script>
 {% endblock %}
+{% endblock content %}
