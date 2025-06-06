@@ -335,6 +335,7 @@ def profile(request):
 
     return render(request, 'profile.html', {
         'customer': customer,
+        'username': customer.username,
         'orders': orders,
         'payment_methods': payment_methods,
         'delivery_addresses': delivery_addresses,
