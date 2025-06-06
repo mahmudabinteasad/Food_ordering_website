@@ -316,29 +316,29 @@ def profile(request):
     customer_id = request.session['customer_id']
     customer = get_object_or_404(Customer, user_id=customer_id)
 
-    # Fetch order history
-    orders = Order.objects.filter(customer=customer).order_by('-timestamp')
+    # Fetch order history and paginate
+    orders_list = Order.objects.filter(customer=customer).order_by('-timestamp')
+    paginator = Paginator(orders_list, 1)  # Show 1 order per page
+    page = request.GET.get('page', 1)
 
-    # Fetch payment methods
+    try:
+        orders = paginator.page(page)
+    except PageNotAnInteger:
+        orders = paginator.page(1)
+    except EmptyPage:
+        orders = paginator.page(paginator.num_pages)
+
+    # Fetch other necessary data
     payment_methods = PaymentMethod.objects.filter(customer=customer)
-
-    # Fetch delivery addresses
     delivery_addresses = DeliveryAddress.objects.filter(customer=customer)
-
-    # Fetch preferences
     preferences = Preferences.objects.filter(customer=customer).first()
 
-    with connection.cursor() as cursor:
-        cursor.execute("SELECT username FROM food_customer WHERE user_id = %s", [customer_id])
-        username = cursor.fetchone()[0]
-
     return render(request, 'profile.html', {
-        'username': username,
         'customer': customer,
         'orders': orders,
         'payment_methods': payment_methods,
         'delivery_addresses': delivery_addresses,
-        'preferences': preferences
+        'preferences': preferences,
     })
 
 def update_profile(request):

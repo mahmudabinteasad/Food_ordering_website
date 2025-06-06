@@ -26,16 +26,21 @@
             <h5>Order History</h5>
         </div>
         <div class="card-body">
-            {% for order in orders %}
-            <div class="order-item mb-3">
-                <p><strong>Order #{{ order.order_id }}:</strong> {{ order.timestamp }}</p>
-                <p><strong>Total:</strong> ${{ order.total_price }}</p>
-                <p><strong>Status:</strong> {{ order.status }}</p>
-                <a href="{% url 'order_details' order.order_id %}" class="btn btn-info">View Details</a>
+            <div id="orderHistory">
+                {% for order in orders %}
+                <div class="order-item mb-3">
+                    <p><strong>Order #{{ order.order_id }}:</strong> {{ order.timestamp }}</p>
+                    <p><strong>Total:</strong> ${{ order.total_price }}</p>
+                    <p><strong>Status:</strong> {{ order.status }}</p>
+                    <a href="{% url 'order_details' order.order_id %}" class="btn btn-info">View Details</a>
+                </div>
+                {% empty %}
+                <p>No orders found.</p>
+                {% endfor %}
             </div>
-            {% empty %}
-            <p>No orders found.</p>
-            {% endfor %}
+            {% if orders.has_next %}
+            <button id="loadMoreOrders" class="btn btn-primary" data-page="{{ orders.next_page_number }}">Load More</button>
+            {% endif %}
         </div>
     </div>
 
@@ -93,4 +98,30 @@
         </div>
     </div>
 </div>
+<script>
+    document.getElementById('loadMoreOrders').addEventListener('click', function() {
+        const button = this;
+        const page = button.getAttribute('data-page');
+
+        fetch(`?page=${page}`)
+            .then(response => response.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const newOrders = doc.querySelectorAll('#orderHistory .order-item');
+
+                newOrders.forEach(order => {
+                    document.getElementById('orderHistory').appendChild(order);
+                });
+
+                const nextPage = parseInt(page) + 1;
+                if (doc.getElementById('loadMoreOrders')) {
+                    button.setAttribute('data-page', nextPage);
+                } else {
+                    button.style.display = 'none';
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    });
+</script>
 {% endblock %}
