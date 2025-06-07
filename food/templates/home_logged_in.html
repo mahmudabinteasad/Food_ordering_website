@@ -5,75 +5,77 @@
 
 {% block content %}
 <!-- Search Bar -->
-<div class="container mt-4 mb-4">
-    <form class="form-inline justify-content-center" action="{% url 'search' %}" method="get">
-        <input class="form-control mr-sm-2" type="search" placeholder="Search by restaurant name or food item" aria-label="Search" name="q" style="width: 300px;">
-        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+<div class="container my-4">
+    <form class="form-inline d-flex justify-content-center" action="{% url 'search' %}" method="get">
+        <input class="form-control me-2 shadow-sm" type="search" placeholder="Search by restaurant name or food item" aria-label="Search" name="q" style="width: 300px;">
+        <button class="btn btn-outline-success" type="submit">Search</button>
     </form>
 </div>
 
 <!-- Featured Restaurants Section -->
-<div class="featured-section" style="background-color: #f8f9fa; padding: 20px;">
+<section class="bg-light py-5">
     <div class="container">
-        <h2 class="text-center" style="color: black;">🔥 Featured Restaurants</h2>
-        <p class="text-center mb-4" style="color: black;">Don't miss today's best offers!</p>
+        <h2 class="text-center fw-semibold text-dark">🔥 Featured Restaurants</h2>
+        <p class="text-center text-muted mb-4">Don't miss today's best offers!</p>
         <div class="row">
             {% for deal in featured_restaurants %}
                 <div class="col-md-3 mb-4">
-                    <div class="card restaurant-card">
+                    <div class="card h-100 shadow-sm border-0">
                         {% if deal.image %}
                             <img src="{{ deal.image.url }}" class="card-img-top" alt="Featured Restaurant">
                         {% else %}
                             <img src="{% static 'images/featured.jpg' %}" class="card-img-top" alt="Featured Restaurant">
                         {% endif %}
-                        <div class="card-body">
+                        <div class="card-body d-flex flex-column">
                             <h5 class="card-title">{{ deal.name }}</h5>
-                            <p class="card-text">{{ deal.address }}</p>
-                            <a href="{% url 'menu' deal.restaurant_id %}" class="btn btn-danger btn-sm">Order Now</a>
+                            <p class="card-text text-muted">{{ deal.address }}</p>
+                            <a href="{% url 'menu' deal.restaurant_id %}" class="btn btn-danger btn-sm mt-auto">Order Now</a>
                         </div>
                     </div>
                 </div>
             {% endfor %}
         </div>
     </div>
-</div>
+</section>
 
-<!-- Gap after Featured Restaurants Section -->
-<div style="margin-bottom: 50px;"></div>
+<!-- Spacer -->
+<div class="my-5"></div>
 
 <!-- All Restaurants Section -->
-<div class="restaurant-list-section">
+<section>
     <div class="container">
-        <h2 class="text-center" style="color: black;">Explore Restaurants</h2>
+        <h2 class="text-center fw-semibold text-dark mb-4">Explore Restaurants</h2>
         <div class="row" id="restaurant-list">
             {% for restaurant in restaurants_page %}
                 <div class="col-md-4 mb-4">
-                    <div class="card restaurant-card">
+                    <div class="card h-100 shadow-sm border-0">
                         {% if restaurant.image %}
                             <img src="{{ restaurant.image.url }}" class="card-img-top" alt="Restaurant Image">
                         {% else %}
                             <img src="{% static 'restaurant_images/steak2.jpg' %}" class="card-img-top" alt="Restaurant Image">
                         {% endif %}
-                        <div class="card-body">
+                        <div class="card-body d-flex flex-column">
                             <h5 class="card-title">{{ restaurant.name }}</h5>
-                            <p class="card-text">{{ restaurant.address }}</p>
-                            <a href="{% url 'menu' restaurant.restaurant_id %}" class="btn btn-primary">View Menu</a>
+                            <p class="card-text text-muted">{{ restaurant.address }}</p>
+                            <a href="{% url 'menu' restaurant.restaurant_id %}" class="btn btn-primary mt-auto">View Menu</a>
                         </div>
                     </div>
                 </div>
             {% endfor %}
         </div>
+
+        <!-- Load More Button -->
         <div class="text-center mt-4">
             {% if restaurants_page.has_next %}
-                <button class="btn btn-primary" id="load-more-btn" data-page="{{ restaurants_page.next_page_number }}">Load More</button>
+                <button class="btn btn-outline-primary" id="load-more-btn" data-page="{{ restaurants_page.next_page_number }}">Load More</button>
             {% endif %}
         </div>
     </div>
-</div>
+</section>
 
 <!-- JavaScript to Handle Load More Button -->
 <script>
-document.getElementById('load-more-btn').addEventListener('click', function() {
+document.getElementById('load-more-btn')?.addEventListener('click', function () {
     const button = this;
     const page = button.getAttribute('data-page');
 
@@ -92,10 +94,10 @@ document.getElementById('load-more-btn').addEventListener('click', function() {
             if (loadMoreButton) {
                 button.setAttribute('data-page', loadMoreButton.getAttribute('data-page'));
             } else {
-                button.style.display = 'none'; // Hide the button if there are no more pages
+                button.style.display = 'none';
             }
         })
-        .catch(error => console.error('Error:', error));
+        .catch(error => console.error('Error loading more restaurants:', error));
 });
 </script>
 {% endblock %}

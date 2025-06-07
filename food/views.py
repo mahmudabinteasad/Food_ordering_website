@@ -494,3 +494,58 @@ def submit_for_approval(request, restaurant_id):
     restaurant = Restaurant.objects.get(restaurant_id=restaurant_id)
     # Here you can add logic to notify admin for approval
     return render(request, 'submit_for_approval.html', {'restaurant': restaurant})
+
+def restaurant_login(request):
+    if request.method == 'POST':
+        # Handle the login logic here
+        # For example, authenticate the restaurant and redirect to the restaurant page
+        pass
+    return render(request, 'restaurant_login.html')
+
+def restaurant_login_submit(request):
+    if request.method == 'POST':
+        restaurant_name = request.POST.get('restaurantName')
+        email = request.POST.get('email')
+
+        # Authenticate the restaurant
+        try:
+            restaurant = Restaurant.objects.get(name=restaurant_name, email=email)
+            return redirect('restaurant_page', restaurant_id=restaurant.restaurant_id)
+        except Restaurant.DoesNotExist:
+            # Handle the case where the restaurant does not exist
+            return redirect('restaurant_login')
+
+def restaurant_page(request, restaurant_id):
+    # Fetch the restaurant object based on the restaurant_id
+    restaurant = get_object_or_404(Restaurant, pk=restaurant_id)
+
+    # Fetch the food items related to this restaurant
+    food_items = FoodItem.objects.filter(restaurant=restaurant)
+
+    # Pass the restaurant object and food items to the template
+    return render(request, 'restaurant_page.html', {
+        'restaurant': restaurant,
+        'food_items': food_items
+    })
+
+def edit_restaurant(request, pk):
+    restaurant = get_object_or_404(Restaurant, pk=pk)
+    if request.method == 'POST':
+        form = RestaurantForm(request.POST, request.FILES, instance=restaurant)
+        if form.is_valid():
+            form.save()
+            return redirect('restaurant_page', restaurant_id=restaurant.restaurant_id)
+    else:
+        form = RestaurantForm(instance=restaurant)
+    return render(request, 'edit_restaurant.html', {'form': form, 'restaurant': restaurant})
+
+def edit_food_item(request, pk):
+    food_item = get_object_or_404(FoodItem, pk=pk)
+    if request.method == 'POST':
+        form = FoodItemForm(request.POST, request.FILES, instance=food_item)
+        if form.is_valid():
+            form.save()
+            return redirect('restaurant_page', restaurant_id=food_item.restaurant.restaurant_id)
+    else:
+        form = FoodItemForm(instance=food_item)
+    return render(request, 'edit_food_item.html', {'form': form, 'food_item': food_item})

@@ -1,0 +1,15 @@
+{% extends 'base_logged_in.html' %}
+{% load static %}
+
+{% block title %}Edit {{ food_item.name }}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="mb-4">Edit Food Item</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Update Food Item</button>
+    </form>
+</div>
+{% endblock %}

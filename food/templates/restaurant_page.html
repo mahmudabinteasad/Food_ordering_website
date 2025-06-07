@@ -1,0 +1,55 @@
+{% extends 'base_logged_in.html' %}
+{% load static %}
+
+{% block title %}{{ restaurant.name }}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <!-- Restaurant Info Section -->
+    <div class="row align-items-center mb-4">
+        <div class="col-md-6 mb-3 mb-md-0">
+            {% if restaurant.image %}
+                <img src="{{ restaurant.image.url }}" class="img-fluid rounded shadow-sm" alt="{{ restaurant.name }}">
+            {% else %}
+                <img src="{% static 'images/default_restaurant.jpg' %}" class="img-fluid rounded shadow-sm" alt="Default Restaurant Image">
+            {% endif %}
+        </div>
+        <div class="col-md-6">
+            <h1 class="display-5 fw-bold">{{ restaurant.name }}</h1>
+            <p class="mb-2"><i class="bi bi-geo-alt-fill me-2 text-primary"></i><strong>Address:</strong> {{ restaurant.address }}</p>
+            <p class="mb-2"><i class="bi bi-envelope-fill me-2 text-primary"></i><strong>Email:</strong> {{ restaurant.email }}</p>
+            <p class="mb-3"><i class="bi bi-telephone-fill me-2 text-primary"></i><strong>Phone:</strong> {{ restaurant.phone }}</p>
+            <a href="{% url 'edit_restaurant' restaurant.pk %}" class="btn btn-outline-primary btn-sm">Edit Restaurant Info.</a>
+            <a href="{% url 'add_food_items' restaurant.pk %}" class="btn btn-outline-success btn-sm">+ Add Food Item</a>
+        </div>
+    </div>
+
+    <!-- Food Items Section -->
+    <div class="mb-4">
+        <h2 class="mb-4 text-center text-uppercase fw-semibold border-bottom pb-2">Menu Items</h2>
+        {% if food_items %}
+        <div class="row">
+            {% for item in food_items %}
+            <div class="col-sm-6 col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    {% if item.image %}
+                        <img src="{{ item.image.url }}" class="card-img-top" alt="{{ item.name }}">
+                    {% else %}
+                        <img src="{% static 'images/default_food.jpg' %}" class="card-img-top" alt="Default Food Image">
+                    {% endif %}
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">{{ item.name }}</h5>
+                        <p class="card-text flex-grow-1">{{ item.description }}</p>
+                        <p class="card-text mt-2"><strong>Price:</strong> ${{ item.price }}</p>
+                        <a href="{% url 'edit_food_item' item.pk %}" class="btn btn-outline-secondary btn-sm mt-2">Edit</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-muted text-center">No food items available.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
