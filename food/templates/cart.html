@@ -16,30 +16,28 @@
             {% csrf_token %}
             <ul class="list-group">
                 {% for item in cart_items %}
-                    <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap" data-restaurant-name="{{ item.food.restaurant.name }}">
-                        <div class="col-md-8">
-                            <div class="d-flex align-items-center">
-                                <input type="checkbox" name="selected_items" value="{{ item.food.food_id }}" class="mr-2" onchange="updateTotal()">
-                                <strong>{{ item.food.name }}</strong> (x{{ item.quantity }})
-                            </div>
-                            <p class="mb-1">Restaurant: {{ item.food.restaurant.name }}</p>
-                            <div class="btn-group btn-group-sm mt-2" role="group">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <input type="checkbox" name="selected_items" value="{{ item.food.food_id }}" onchange="updateTotal()">
+                            <strong>{{ item.food.name }}</strong> (x{{ item.quantity }})
+                            <p>Restaurant: {{ item.food.restaurant.name }}</p>
+                            <div class="btn-group" role="group">
                                 <form method="POST" action="{% url 'add_to_cart' item.food.food_id %}" class="d-inline">
                                     {% csrf_token %}
                                     <input type="hidden" name="quantity" value="1">
-                                    <button type="submit" class="btn btn-success">+</button>
+                                    <button type="submit" class="btn btn-success btn-sm">+</button>
                                 </form>
                                 <form method="POST" action="{% url 'remove_from_cart' item.food.food_id %}" class="d-inline">
                                     {% csrf_token %}
-                                    <button type="submit" class="btn btn-warning">-</button>
+                                    <button type="submit" class="btn btn-warning btn-sm">-</button>
                                 </form>
                                 <form method="POST" action="{% url 'delete_from_cart' item.food.food_id %}" class="d-inline">
                                     {% csrf_token %}
-                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                                 </form>
                             </div>
                         </div>
-                        <div class="col-md-3 text-right">
+                        <div>
                             <span class="item-price">${{ item.food.price|floatformat:2 }}</span>
                             <input type="hidden" class="item-quantity" value="{{ item.quantity }}">
                         </div>
@@ -76,7 +74,9 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Order Summary</h5>
-                <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
             <div class="modal-body">
                 <h6>Restaurant: <span id="restaurantName">Loading...</span></h6>
@@ -89,14 +89,13 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button class="btn btn-primary" id="submitPayment">Confirm Order</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="submitPayment">Confirm Order</button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Scripts -->
 <script>
     function updateTotal() {
         let total = 0;
@@ -121,7 +120,7 @@
             const name = item.querySelector('strong').textContent;
             const quantity = item.querySelector('.item-quantity').value;
             const price = item.querySelector('.item-price').textContent;
-            restaurantName = item.getAttribute('data-restaurant-name') || 'Unknown';
+            restaurantName = item.querySelector('p').textContent.replace('Restaurant: ', '');
 
             const listItem = document.createElement('li');
             listItem.textContent = `${name} (x${quantity}) - ${price}`;
@@ -144,89 +143,89 @@
         }
     }
 
-document.addEventListener('DOMContentLoaded', () => {
-    updateTotal();
+    document.addEventListener('DOMContentLoaded', () => {
+        updateTotal();
 
-    // Attach event listeners to all checkboxes
-    document.querySelectorAll('input[name="selected_items"]').forEach(cb => {
-        cb.addEventListener('change', () => {
-            updateTotal();
-            updateOrderSummary();
-            document.getElementById('noSelectionMsg').style.display = 'none';
+        // Attach event listeners to all checkboxes
+        document.querySelectorAll('input[name="selected_items"]').forEach(cb => {
+            cb.addEventListener('change', () => {
+                updateTotal();
+                updateOrderSummary();
+                document.getElementById('noSelectionMsg').style.display = 'none';
+            });
         });
-    });
 
-    // Ensure that the "+" buttons are correctly handled
-    document.querySelectorAll('form[d-inline] button[type="submit"]').forEach(button => {
-        button.addEventListener('click', function(event) {
-            event.preventDefault(); // Prevent the default form submission
-            const form = button.closest('form');
-            const formData = new FormData(form);
+        // Ensure that the "+" buttons are correctly handled
+        document.querySelectorAll('form[d-inline] button[type="submit"]').forEach(button => {
+            button.addEventListener('click', function(event) {
+                event.preventDefault(); // Prevent the default form submission
+                const form = button.closest('form');
+                const formData = new FormData(form);
 
-            fetch(form.action, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-CSRFToken': form.querySelector('[name=csrfmiddlewaretoken]').value
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    window.location.reload(); // Reload the page to reflect the updated quantity
-                } else {
-                    console.error('Error:', data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
+                fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': form.querySelector('[name=csrfmiddlewaretoken]').value
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        window.location.reload(); // Reload the page to reflect the updated quantity
+                    } else {
+                        console.error('Error:', data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
             });
         });
     });
-});
 
-   document.getElementById("submitPayment").addEventListener("click", function () {
-    const cardInput = document.getElementById("card-element").value.trim();
-    const selectedItems = Array.from(document.querySelectorAll('input[name="selected_items"]:checked')).map(cb => cb.value);
+    document.getElementById("submitPayment").addEventListener("click", function () {
+        const cardInput = document.getElementById("card-element").value.trim();
+        const selectedItems = Array.from(document.querySelectorAll('input[name="selected_items"]:checked')).map(cb => cb.value);
 
-    if (selectedItems.length === 0) {
-        alert("Please select at least one item.");
-        return;
-    }
-
-    if (!cardInput) {
-        document.getElementById("card-errors").textContent = "Please enter your card information.";
-        return;
-    }
-
-    document.getElementById("card-errors").textContent = "";
-
-    fetch('/place_order/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'X-CSRFToken': '{{ csrf_token }}'
-        },
-        body: new URLSearchParams({
-            selected_items: selectedItems,
-            card_number: cardInput
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === 'success') {
-            alert("Order confirmed. Enjoy your food!");
-            window.location.reload();
-        } else {
-            console.error('Error:', data.message);
-            alert(data.message);
+        if (selectedItems.length === 0) {
+            alert("Please select at least one item.");
+            return;
         }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
 
-    $('#orderSummaryModal').modal('hide');
-});
+        if (!cardInput) {
+            document.getElementById("card-errors").textContent = "Please enter your card information.";
+            return;
+        }
+
+        document.getElementById("card-errors").textContent = "";
+
+        fetch('/place_order/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: new URLSearchParams({
+                selected_items: selectedItems,
+                card_number: cardInput
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                alert("Order confirmed. Enjoy your food!");
+                window.location.reload();
+            } else {
+                console.error('Error:', data.message);
+                alert(data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+
+        $('#orderSummaryModal').modal('hide');
+    });
 </script>
 {% endblock %}

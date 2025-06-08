@@ -240,25 +240,6 @@ def place_order(request):
     messages.error(request, 'Invalid request method')
     return redirect('cart')
 
-@csrf_exempt
-def delete_cart_items(request):
-    if request.method == 'POST':
-        item_ids_str = request.POST.get('item_ids')
-        if not item_ids_str:
-            return JsonResponse({'status': 'error', 'message': 'No items provided.'})
-
-        try:
-            item_ids = json.loads(item_ids_str)
-            if not item_ids:
-                return JsonResponse({'status': 'error', 'message': 'No valid items in cart.'})
-        except json.JSONDecodeError:
-            return JsonResponse({'status': 'error', 'message': 'Invalid JSON.'})
-
-        Cart.objects.filter(food__food_id__in=item_ids).delete()
-        return JsonResponse({'status': 'success'})
-
-    return JsonResponse({'status': 'error', 'message': 'Invalid request method.'})
-
 def order_confirmation(request, order_id):
     if 'customer_id' not in request.session:
         return redirect('signin')
@@ -279,6 +260,25 @@ def confirm_order(request, order_id):
     order.save()
     messages.success(request, 'Order confirmed successfully!')
     return redirect('order_confirmation', order_id=order.order_id)
+
+@csrf_exempt
+def delete_cart_items(request):
+    if request.method == 'POST':
+        item_ids_str = request.POST.get('item_ids')
+        if not item_ids_str:
+            return JsonResponse({'status': 'error', 'message': 'No items provided.'})
+
+        try:
+            item_ids = json.loads(item_ids_str)
+            if not item_ids:
+                return JsonResponse({'status': 'error', 'message': 'No valid items in cart.'})
+        except json.JSONDecodeError:
+            return JsonResponse({'status': 'error', 'message': 'Invalid JSON.'})
+
+        Cart.objects.filter(food__food_id__in=item_ids).delete()
+        return JsonResponse({'status': 'success'})
+
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method.'})
 
 def remove_from_cart(request, food_id):
     if 'customer_id' not in request.session:
@@ -308,6 +308,18 @@ def delete_from_cart(request, food_id):
     Cart.objects.filter(customer=customer, food=food).delete()
 
     return redirect('cart')
+
+def order_details(request, order_id):
+    if 'customer_id' not in request.session:
+        return redirect('signin')
+
+    order = get_object_or_404(Order, order_id=order_id)
+    order_items = OrderItem.objects.filter(order=order)
+
+    return render(request, 'order_details.html', {
+        'order': order,
+        'order_items': order_items
+    })
 
 def profile(request):
     if 'customer_id' not in request.session:
@@ -426,18 +438,6 @@ def update_preferences(request):
         return redirect('profile')
 
     return render(request, 'update_preferences.html', {'preferences': preferences})
-
-def order_details(request, order_id):
-    if 'customer_id' not in request.session:
-        return redirect('signin')
-
-    order = get_object_or_404(Order, order_id=order_id)
-    order_items = OrderItem.objects.filter(order=order)
-
-    return render(request, 'order_details.html', {
-        'order': order,
-        'order_items': order_items
-    })
 
 @login_required
 def profile_view(request):
