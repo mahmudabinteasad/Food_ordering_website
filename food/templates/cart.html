@@ -2,56 +2,65 @@
 {% block title %}Your Cart{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <h2>Your Cart</h2>
+<div class="container mt-5 mb-5">
+    <h2 class="text-center mb-4">🛒 Your Cart</h2>
 
     {% if messages %}
         {% for message in messages %}
-            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            <div class="alert alert-{{ message.tags }} text-center">{{ message }}</div>
         {% endfor %}
     {% endif %}
 
     {% if cart_items %}
-        <form method="POST" action="{% url 'place_order' %}">
+        <div class="alert alert-success text-center">
+            🛍️ Order the first item in your cart now and get <strong>5% off</strong>!
+        </div>
+
+        <form method="POST" action="{% url 'place_order' %}" class="mt-4">
             {% csrf_token %}
             <ul class="list-group">
                 {% for item in cart_items %}
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <div>
-                            <input type="checkbox" name="selected_items" value="{{ item.food.food_id }}" onchange="updateTotal()">
-                            <strong>{{ item.food.name }}</strong> (x{{ item.quantity }})
-                            <p>Restaurant: {{ item.food.restaurant.name }}</p>
-                            <div class="btn-group" role="group">
-                                <form method="POST" action="{% url 'add_to_cart' item.food.food_id %}" class="d-inline">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="quantity" value="1">
-                                    <button type="submit" class="btn btn-success btn-sm">+</button>
-                                </form>
-                                <form method="POST" action="{% url 'remove_from_cart' item.food.food_id %}" class="d-inline">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn btn-warning btn-sm">-</button>
-                                </form>
-                                <form method="POST" action="{% url 'delete_from_cart' item.food.food_id %}" class="d-inline">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                                </form>
+                    <li class="list-group-item">
+                        <div class="d-flex justify-content-between align-items-start flex-wrap">
+                            <div class="flex-grow-1">
+                                <input type="checkbox" name="selected_items" value="{{ item.food.food_id }}" onchange="updateTotal()" class="me-2">
+                                <strong>{{ item.food.name }}</strong> (x{{ item.quantity }})
+                                <p class="mb-1"><small class="text-muted">Restaurant: {{ item.food.restaurant.name }}</small></p>
+                                <div class="btn-group btn-group-sm mb-2" role="group">
+                                    <form method="POST" action="{% url 'add_to_cart' item.food.food_id %}" class="d-inline">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="quantity" value="1">
+                                        <button type="submit" class="btn btn-success">+</button>
+                                    </form>
+                                    <form method="POST" action="{% url 'remove_from_cart' item.food.food_id %}" class="d-inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-warning">-</button>
+                                    </form>
+                                    <form method="POST" action="{% url 'delete_from_cart' item.food.food_id %}" class="d-inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                    </form>
+                                </div>
+                                {% if forloop.first %}
+                                    <div><small class="text-info">💡 Select it and click <strong>“+”</strong> to order directly and get the offer!</small></div>
+                                {% endif %}
                             </div>
-                        </div>
-                        <div>
-                            <span class="item-price">${{ item.food.price|floatformat:2 }}</span>
-                            <input type="hidden" class="item-quantity" value="{{ item.quantity }}">
+                            <div class="text-end">
+                                <span class="item-price fs-5 fw-semibold">${{ item.food.price|floatformat:2 }}</span>
+                                <input type="hidden" class="item-quantity" value="{{ item.quantity }}">
+                            </div>
                         </div>
                     </li>
                 {% endfor %}
             </ul>
 
-            <div class="mt-3">
-                <h4>Total: $<span id="totalPrice">0.00</span></h4>
+            <div class="mt-4">
+                <h4 class="text-end">Total: $<span id="totalPrice">0.00</span></h4>
             </div>
 
             {% if delivery_addresses %}
-                <div class="form-group mt-3">
-                    <label for="delivery_address">Select Delivery Address:</label>
+                <div class="form-group mt-4">
+                    <label for="delivery_address" class="form-label fw-semibold">Select Delivery Address:</label>
                     <select class="form-control" id="delivery_address" name="delivery_address" required>
                         {% for address in delivery_addresses %}
                             <option value="{{ address.address_id }}">{{ address.address }}, {{ address.city }}, {{ address.state }}, {{ address.zip_code }}</option>
@@ -60,37 +69,37 @@
                 </div>
             {% endif %}
 
-            <button type="button" class="btn btn-primary mt-3" onclick="handlePlaceOrderClick()">Place Order</button>
-            <span id="noSelectionMsg" class="text-danger mt-2 d-block" style="display:none;">Please select at least one item before placing an order.</span>
+            <div class="text-center mt-4">
+                <button type="button" class="btn btn-primary btn-lg" onclick="handlePlaceOrderClick()">Place Order</button>
+                <span id="noSelectionMsg" class="text-danger mt-2 d-block" style="display:none;">Please select at least one item before placing an order.</span>
+            </div>
         </form>
     {% else %}
-        <p>Your cart is empty.</p>
+        <p class="text-center mt-5">Your cart is empty.</p>
     {% endif %}
 </div>
 
 <!-- Order Summary Modal -->
 <div class="modal fade" id="orderSummaryModal" tabindex="-1" role="dialog" aria-labelledby="orderSummaryModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content shadow-lg rounded-4">
             <div class="modal-header">
-                <h5 class="modal-title">Order Summary</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <h5 class="modal-title fw-bold">Order Summary</h5>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <h6>Restaurant: <span id="restaurantName">Loading...</span></h6>
-                <ul id="orderItems"></ul>
+                <h6 class="mb-2">Restaurant: <span id="restaurantName" class="fw-semibold">Loading...</span></h6>
+                <ul id="orderItems" class="list-unstyled mb-3"></ul>
                 <h6>Total Amount: $<span id="modalTotalPrice">0.00</span></h6>
-                <div class="form-group">
-                    <label for="card-element">Credit or debit card</label>
+                <div class="form-group mt-3">
+                    <label for="card-element" class="form-label">Credit or Debit Card</label>
                     <input type="text" id="card-element" class="form-control" placeholder="Enter card number">
-                    <div id="card-errors" class="text-danger mt-1"></div>
+                    <div id="card-errors" class="text-danger mt-1 small"></div>
                 </div>
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer justify-content-between">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="submitPayment">Confirm Order</button>
+                <button type="button" class="btn btn-success" id="submitPayment">✅ Confirm Order</button>
             </div>
         </div>
     </div>
@@ -146,7 +155,6 @@
     document.addEventListener('DOMContentLoaded', () => {
         updateTotal();
 
-        // Attach event listeners to all checkboxes
         document.querySelectorAll('input[name="selected_items"]').forEach(cb => {
             cb.addEventListener('change', () => {
                 updateTotal();
@@ -155,10 +163,10 @@
             });
         });
 
-        // Ensure that the "+" buttons are correctly handled
+        // Update "+" button AJAX reload
         document.querySelectorAll('form[d-inline] button[type="submit"]').forEach(button => {
-            button.addEventListener('click', function(event) {
-                event.preventDefault(); // Prevent the default form submission
+            button.addEventListener('click', function (event) {
+                event.preventDefault();
                 const form = button.closest('form');
                 const formData = new FormData(form);
 
@@ -169,17 +177,17 @@
                         'X-CSRFToken': form.querySelector('[name=csrfmiddlewaretoken]').value
                     }
                 })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        window.location.reload(); // Reload the page to reflect the updated quantity
-                    } else {
-                        console.error('Error:', data.message);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            window.location.reload();
+                        } else {
+                            console.error('Error:', data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
             });
         });
     });
@@ -211,19 +219,19 @@
                 card_number: cardInput
             })
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                alert("Order confirmed. Enjoy your food!");
-                window.location.reload();
-            } else {
-                console.error('Error:', data.message);
-                alert(data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    alert("Order confirmed. Enjoy your food!");
+                    window.location.reload();
+                } else {
+                    console.error('Error:', data.message);
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
 
         $('#orderSummaryModal').modal('hide');
     });

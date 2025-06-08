@@ -154,7 +154,7 @@ def cart(request):
 
     customer_id = request.session['customer_id']
     customer = get_object_or_404(Customer, user_id=customer_id)
-    cart_items = Cart.objects.filter(customer=customer).select_related('food__restaurant').order_by('-cart_id')
+    cart_items = Cart.objects.filter(customer=customer).select_related('food__restaurant').order_by('cart_id')
     total = sum(item.food.price * item.quantity for item in cart_items)
     total_items = sum(item.quantity for item in cart_items)
     delivery_addresses = DeliveryAddress.objects.filter(customer=customer)
@@ -315,6 +315,11 @@ def order_details(request, order_id):
 
     order = get_object_or_404(Order, order_id=order_id)
     order_items = OrderItem.objects.filter(order=order)
+
+    # Debugging output
+    print(f"Order ID: {order.order_id}, Total Price: {order.total_price}, Status: {order.status}")
+    for item in order_items:
+        print(f"Order Item ID: {item.order_item_id}, Food: {item.food.name}, Quantity: {item.quantity}")
 
     return render(request, 'order_details.html', {
         'order': order,
