@@ -215,7 +215,7 @@ def place_order(request):
                 order = Order.objects.create(
                     customer=customer,
                     total_price=total,
-                    status="Placed",
+                    status="Confirmed",
                 )
 
                 # ✅ Create OrderItems
