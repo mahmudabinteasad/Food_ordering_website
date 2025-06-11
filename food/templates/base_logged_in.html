@@ -49,13 +49,12 @@
                         <a class="nav-link" href="{% url 'logout' %}">Logout</a>
                     </li>
                     <li class="nav-item">
-                        <button class="nav-link btn btn-link" style="cursor: pointer;" onclick="confirmDelete({{ restaurant.restaurant_id }})">Delete</button>
+                        <button class="nav-link btn btn-link" style="cursor: pointer;" onclick="confirmDelete('{{ restaurant.restaurant_id }}')">Delete</button>
                     </li>
                 {% endif %}
             </ul>
         </div>
     </nav>
-
     <div class="container">
         {% block content %}
         {% endblock %}

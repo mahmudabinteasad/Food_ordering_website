@@ -246,7 +246,10 @@ def order_confirmation(request, order_id):
 
     order = get_object_or_404(Order, order_id=order_id)
     order_items = OrderItem.objects.filter(order=order)
-    return redirect('cart')
+    return render(request, 'order_confirmation.html', {
+        'order': order,
+        'order_items': order_items
+    })
 
 def confirm_order(request, order_id):
     if 'customer_id' not in request.session:
@@ -256,7 +259,7 @@ def confirm_order(request, order_id):
     order.status = 'Confirmed'
     order.save()
     messages.success(request, 'Order confirmed successfully!')
-    return redirect('order_confirmation', order_id=order.order_id)
+    return redirect('cart')
 
 @csrf_exempt
 def delete_cart_items(request):
