@@ -205,7 +205,7 @@ def place_order(request):
                 cart_items = Cart.objects.filter(customer=customer, food__food_id__in=selected_item_ids)
 
                 if not cart_items.exists():
-                    messages.error(request, 'No valid items in cart.')
+                    messages.error(request, 'Cannot increase first item here! Go to the restaurant and add items.')
                     return redirect('cart')  # Redirect back to the cart page if no valid items
 
                 # ✅ Calculate total price
@@ -246,10 +246,7 @@ def order_confirmation(request, order_id):
 
     order = get_object_or_404(Order, order_id=order_id)
     order_items = OrderItem.objects.filter(order=order)
-    return render(request, 'order_confirmation.html', {
-        'order': order,
-        'order_items': order_items
-    })
+    return redirect('cart')
 
 def confirm_order(request, order_id):
     if 'customer_id' not in request.session:
@@ -554,3 +551,9 @@ def edit_food_item(request, pk):
     else:
         form = FoodItemForm(instance=food_item)
     return render(request, 'edit_food_item.html', {'form': form, 'food_item': food_item})
+
+def delete_restaurant(request, restaurant_id):
+    if request.method == 'GET':
+        restaurant = get_object_or_404(Restaurant, pk=restaurant_id)
+        restaurant.delete()
+        return redirect('home')  # Redirect to a suitable page after deletion

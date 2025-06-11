@@ -47,7 +47,7 @@
                         <h5 class="card-title">{{ food_item.name }}</h5>
                         <p class="card-text text-muted flex-grow-1">{{ food_item.description }}</p>
                         <p class="card-text font-weight-bold mb-2">$ {{ food_item.price }}</p>
-                        <button class="btn btn-outline-success btn-sm mt-auto" data-toggle="modal" data-target="#foodItemModal{{ food_item.id }}">
+                        <button class="btn btn-outline-success btn-sm mt-auto" data-toggle="modal" data-target="#foodItemModal{{ food_item.food_id }}">
                             View Details
                         </button>
                     </div>
@@ -55,11 +55,11 @@
             </div>
 
             <!-- Modal -->
-            <div class="modal fade" id="foodItemModal{{ food_item.id }}" tabindex="-1" role="dialog" aria-labelledby="foodItemModalLabel{{ food_item.id }}" aria-hidden="true">
+            <div class="modal fade" id="foodItemModal{{ food_item.food_id }}" tabindex="-1" role="dialog" aria-labelledby="foodItemModalLabel{{ food_item.food_id }}" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">
                         <div class="modal-header bg-light">
-                            <h5 class="modal-title" id="foodItemModalLabel{{ food_item.id }}">{{ food_item.name }}</h5>
+                            <h5 class="modal-title" id="foodItemModalLabel{{ food_item.food_id }}">{{ food_item.name }}</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -71,13 +71,16 @@
                             <p><strong>Price:</strong> ${{ food_item.price }}</p>
                             <p><strong>Description:</strong> {{ food_item.description }}</p>
                             <p><strong>Special Instructions:</strong> {{ food_item.special_instructions }}</p>
-                            <div class="input-group my-3">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text">Qty</span>
+                            <form method="post" action="{% url 'add_to_cart' food_item.food_id %}">
+                                {% csrf_token %}
+                                <div class="input-group my-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Qty</span>
+                                    </div>
+                                    <input type="number" name="quantity" class="form-control" value="1" min="1">
                                 </div>
-                                <input type="number" class="form-control" value="1" min="1">
-                            </div>
-                            <button class="btn btn-success w-100">Add to Cart</button>
+                                <button type="submit" class="btn btn-success w-100">Add to Cart</button>
+                            </form>
                         </div>
                         <div class="modal-footer bg-light">
                             <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>

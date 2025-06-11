@@ -44,9 +44,12 @@
                         </a>
                     </li>
                 {% else %}
-                    <!-- Show only Logout button for restaurant page -->
+                    <!-- Show only Logout button and Delete button for restaurant page -->
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link btn btn-link" style="cursor: pointer;" onclick="confirmDelete({{ restaurant.restaurant_id }})">Delete</button>
                     </li>
                 {% endif %}
             </ul>
@@ -61,5 +64,14 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        function confirmDelete(restaurantId) {
+            if (confirm('Are you sure you want to delete this restaurant?')) {
+                // Redirect to the delete URL with the correct restaurantId
+                window.location.href = `/restaurant/${restaurantId}/delete/`;
+            }
+        }
+    </script>
 </body>
 </html>
