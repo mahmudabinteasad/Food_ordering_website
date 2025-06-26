@@ -225,9 +225,22 @@
         <h3>Ready to Feast?</h3>
         <p>Sign up today and enjoy mouth-watering meals delivered fast!</p>
         <a href="{% url 'signup' %}" class="btn btn-success">Join Now</a>
+        <!--
         <span style="font-weight: bold;">Or</span>
         <a href="{% url 'add_restaurant' %}" class="btn btn-warning">Register Your Restaurant</a>
          <span style="font-weight: bold;">Or</span>
+        <a href="{% url 'restaurant_login' %}" class="btn btn-info">Login to Your Restaurant</a>
+    -->
+    </div>
+</div>
+
+<!-- Restaurant Registration/Login Section -->
+<div class="container-fluid py-4 mt-5" style="background-color: #fff3cd;">
+    <div class="container text-center">
+        <h4>Are You a Restaurant Owner?</h4>
+        <p>Get your restaurant online and start receiving orders now!</p>
+        <a href="{% url 'add_restaurant' %}" class="btn btn-warning mb-2">Register Your Restaurant</a>
+        <br>
         <a href="{% url 'restaurant_login' %}" class="btn btn-info">Login to Your Restaurant</a>
     </div>
 </div>
