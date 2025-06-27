@@ -560,3 +560,11 @@ def delete_restaurant(request, restaurant_id):
         restaurant = get_object_or_404(Restaurant, pk=restaurant_id)
         restaurant.delete()
         return redirect('home')  # Redirect to a suitable page after deletion
+    
+def delete_food_item(request, pk):
+    food_item = get_object_or_404(FoodItem, pk=pk)
+    restaurant_id = food_item.restaurant.pk
+    if request.method == 'POST':
+        food_item.delete()
+        messages.success(request, f"Food item '{food_item.name}' has been deleted successfully.")
+    return redirect('restaurant_page', restaurant_id=restaurant_id)
