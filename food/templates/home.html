@@ -5,36 +5,121 @@
 
 {% block content %}
 <!-- Hero Section -->
-<div class="jumbotron text-center" style="background-color: #a68b68; color: white;">
-    <h1 class="display-4">Welcome to Food Nest</h1>
-    <p class="lead">Order your favorite meals from local restaurants with ease.</p>
-    <a href="{% url 'signup' %}" class="btn btn-primary btn-lg" style="background-color: #588b88; border-color: #4ECDC4;">Sign Up</a>
-    <a href="{% url 'signin' %}" class="btn btn-outline-secondary btn-lg" style="background-color: transparent; border-color: #4ECDC4; color: white;">Sign In</a>
+<div class="jumbotron text-center full-width-jumbotron">
+    <h1 class="display-4 fw-bold mb-3">Welcome to <span class="text-accent">Food Nest</span></h1>
+    <p class="lead mb-4">Order your favorite meals from local restaurants with ease.</p>
+<a href="{% url 'signup' %}" class="btn btn-lg me-2" style="background-color: #8a2626; border-color: #ffffff; color: white; border-radius: 50px;">Sign Up</a>
+    <a href="{% url 'signin' %}" class="btn btn-outline-light btn-lg">Sign In</a>
 </div>
 
 <style>
-    .jumbotron {
-        background-color: #a68b68;
-        color: white;
-        padding: 2rem 1rem;
-        margin-bottom: 2rem;
-        border-radius: 0.3rem;
+    body {
+        overflow-x: hidden;
+        font-family: 'Poppins', sans-serif;
+        background-color: #fdfdfd;
+        color: #333;
     }
 
-    .btn-primary {
-        background-color: #4ECDC4;
-        border-color: #4ECDC4;
+    .text-accent {
+        color: #780606;
     }
 
-    .btn-outline-secondary {
-        background-color: transparent;
-        border-color: #4ECDC4;
+    .full-width-jumbotron {
+        background: linear-gradient(135deg,#c3a72a,#de533d);
+        color: white;
+        padding: 4rem 1rem;
+        margin-bottom: 4rem;
+        border-radius: 0 0 2rem 2rem;
+        width: 100vw;
+        position: relative;
+        left: 50%;
+        right: 50%;
+        margin-left: -50vw;
+        margin-right: -50vw;
+        box-sizing: border-box;
+        text-shadow: 1px 1px 5px rgba(0,0,0,0.3);
+    }
+
+    /* ONLY THIS ADDED: Increase hero text sizes */
+    .full-width-jumbotron h1.display-4 {
+        font-size: 7rem;
+        line-height: 1.1;
+    }
+
+    .full-width-jumbotron p.lead {
+        font-size: 1.75rem;
+    }
+
+    .btn-accent {
+        background-color: #8a2626;
+        border-color: #f4efeb;
+        color: white;
+        border-radius: 50px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-accent:hover, .btn-outline-light:hover {
+        transform: scale(1.05);
+        opacity: 0.9;
+    }
+
+    .carousel-inner img {
+        border-radius: 1rem;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+
+    .carousel-caption h5 {
+        font-size: 1.8rem;
+        font-weight: 600;
+        text-shadow: 1px 1px 5px rgba(0,0,0,0.6);
+    }
+
+    .carousel-caption p {
+        font-size: 1rem;
+    }
+
+    .container h2, .container h3, .container h4 {
+        color: #222;
+        font-weight: 700;
+    }
+
+    .container p {
+        color: #0a0800;
+    }
+
+    .card {
+        border-radius: 1rem;
+        transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    }
+
+    .container-fluid {
+        border-radius: 1rem;
+        box-shadow: inset 0 0 20px rgba(0,0,0,0.05);
+    }
+
+    .btn {
+        border-radius: 50px;
+    }
+
+    .btn-warning, .btn-info, .btn-success {
         color: white;
     }
 
-    .btn-outline-secondary:hover {
-        background-color: #4ECDC4;
-        color: white;
+    .btn-warning:hover, .btn-info:hover, .btn-success:hover {
+        transform: scale(1.05);
+    }
+
+    .special-offer {
+        background: linear-gradient(135deg, #fceabb, #f8b500);
+        color: #333;
+        border-radius: 1rem;
+        padding: 2rem;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
     }
 </style>
 
@@ -136,10 +221,6 @@
     </div>
 </div>
 
-<!-- Image Before Key Features Section -->
-<div class="container my-5 text-center">
-    <img src="{% static 'images/why.png' %}" alt="Delicious Food Banner" class="img-fluid rounded" style="max-width: 100%; height: auto;">
-</div>
 
 <!-- Key Features Section -->
 <div class="container my-5">
@@ -225,25 +306,87 @@
         <h3>Ready to Feast?</h3>
         <p>Sign up today and enjoy mouth-watering meals delivered fast!</p>
         <a href="{% url 'signup' %}" class="btn btn-success">Join Now</a>
-        <!--
-        <span style="font-weight: bold;">Or</span>
-        <a href="{% url 'add_restaurant' %}" class="btn btn-warning">Register Your Restaurant</a>
-         <span style="font-weight: bold;">Or</span>
-        <a href="{% url 'restaurant_login' %}" class="btn btn-info">Login to Your Restaurant</a>
-    -->
     </div>
 </div>
 
-<!-- Restaurant Registration/Login Section -->
-<div class="container-fluid py-4 mt-5" style="background-color: #fff3cd;">
-    <div class="container text-center">
-        <h4>Are You a Restaurant Owner?</h4>
-        <p>Get your restaurant online and start receiving orders now!</p>
+<!-- Restaurant Partnership Section -->
+<section class="partner-section position-relative text-start mt-5">
+    <div class="partner-bg"></div>
+    <div class="partner-content">
+        <div class="partner-card p-4 p-md-5 shadow">
+            <h2 class="fw-bold mb-3">List your restaurant on Food Nest</h2>
+            <p class="mb-3">Would you like millions of new customers to enjoy your amazing food and groceries? So would we!</p>
+            <p class="mb-3">It's simple: we list your menu and product lists online, help you process orders, pick them up, and deliver them to hungry customers – in a heartbeat!</p>
+            <p class="mb-4">Interested? Let's start our partnership today!</p>
         <a href="{% url 'add_restaurant' %}" class="btn btn-warning mb-2">Register Your Restaurant</a>
         <br>
         <a href="{% url 'restaurant_login' %}" class="btn btn-info">Login to Your Restaurant</a>
+        </div>
     </div>
+</section>
+
+<style>
+    .partner-section {
+        position: relative;
+        width: 100%;
+        height: 500px; /* Fixed height for the background image section */
+        overflow: visible; /* Allow content to overflow */
+    }
+
+    .partner-bg {
+        background: url('/static/images/ok.png') center center/cover no-repeat;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+    }
+
+    .partner-content {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        justify-content: flex-start; /* Align to the left */
+        padding-left: 50px; /* Add left padding to position the box */
+        margin-top: 50px; /* Adjust this value to control the overlap */
+    }
+
+    .partner-card {
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 1rem;
+        max-width: 500px;
+        width: 100%;
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin-top: 250px; /* Push the box down */
+    }
+
+    .partner-card h2 {
+        font-size: 2rem;
+    }
+
+    .btn-accent {
+        background-color: #8a2626;
+        border-color: #ffffff;
+        color: white;
+        border-radius: 50px;
+        transition: all 0.3s ease;
+        padding: 10px 20px;
+        display: inline-block;
+        text-align: center;
+    }
+
+    .btn-accent:hover {
+        transform: scale(1.05);
+        opacity: 0.9;
+    }
+</style>
+
+<!-- Space section -->
+<div class="container-fluid mt-5" style="padding-top: 90px; padding-bottom: 75px; background-color: transparent; box-shadow: none;">
 </div>
+
 
 <!-- Special Offers -->
 <div class="container text-center my-5">
