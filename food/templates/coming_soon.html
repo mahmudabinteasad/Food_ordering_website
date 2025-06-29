@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %}Coming Soon{% endblock %}
+
+{% block content %}
+<div class="container text-center my-5">
+  <h1 class="display-4">🚧 Coming Soon!</h1>
+  <p class="lead mt-4">Currently, we don’t have {{ platform }} set up yet.</p>
+  <p>We’re working hard to bring it online — stay tuned!</p>
+  <a href="{% url 'home' %}" class="btn btn-primary mt-4">Back to Home</a>
+</div>
+{% endblock %}

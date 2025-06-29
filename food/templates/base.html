@@ -1,170 +1,236 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}GrabNow{% endblock %}</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
-    <style>
-        body {
-            padding-top: 56px;
-        }
-        .navbar {
-            margin-bottom: 20px;
-        }
-        footer {
-            background-color: #343a40;
-            color: white;
-            padding: 20px 0;
-            margin-top: 20px;
-        }
-        footer a {
-            color: white;
-        }
-        footer a:hover {
-            color: #adb5bd;
-        }
-    </style>
-</head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
-        <a class="navbar-brand" href="{% url 'home' %}">Food Nest</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ml-auto">
-                <!-- Home Button -->
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'home' %}">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'signin' %}">Sign In</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'signup' %}">Sign Up</a>
-                </li>
-                <li class="nav-item">
-                    <form class="form-inline" action="{% url 'search' %}" method="get">
-                        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="q">
-                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                    </form>
-                </li>
-            </ul>
-        </div>
-    </nav>
-
-    <div class="container">
-        {% block content %}
-        {% endblock %}
-    </div>
-
-<!-- Conditionally Render Footer -->
-{% if request.resolver_match.url_name != 'signin' and request.resolver_match.url_name != 'signup' %}
-<footer class="text-center footer-custom py-5">
-    <div class="container">
-        <div class="row text-start text-md-center">
-            <!-- About Us -->
-            <div class="col-md-4 mb-4 mb-md-0">
-                <h5 class="footer-title">About Us</h5>
-                <p class="footer-text">Welcome to Food Nest, your go-to platform for ordering delicious meals from local restaurants.</p>
-            </div>
-
-            <!-- Quick Links -->
-            <div class="col-md-4 mb-4 mb-md-0">
-                <h5 class="footer-title">Quick Links</h5>
-                <ul class="list-unstyled footer-links">
-                    <li><a href="{% url 'home' %}">Home</a></li>
-                    <li><a href="{% url 'restaurant_list' %}">Restaurants</a></li>
-                    <li><a href="{% url 'signup' %}">Sign Up</a></li>
-                    <li><a href="{% url 'signin' %}">Sign In</a></li>
-                </ul>
-            </div>
-
-            <!-- Contact Info -->
-            <div class="col-md-4">
-                <h5 class="footer-title">Contact Info</h5>
-                <p class="footer-text mb-1">Email: <a href="mailto:contact@foodnest.com">contact@foodnest.com</a></p>
-                <p class="footer-text">Phone: (123) 456-7890</p>
-                <div class="social-links mt-3">
-                    <a href="#" class="footer-social"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="footer-social"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class="footer-social"><i class="fab fa-instagram"></i></a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Copyright -->
-        <div class="row mt-4">
-            <div class="col-12">
-                <p class="mb-0 footer-copy">&copy; 2025 Food Nest. All rights reserved.</p>
-            </div>
-        </div>
-    </div>
-</footer>
-<style>
-    .footer-custom {
-        background-color: #222;           /* Dark charcoal */
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Food Nest{% endblock %}</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    body {
+      padding-top: 56px;
+    }
+    .navbar {
+      margin-bottom: 20px;
+      background: linear-gradient(90deg, #FF9F1C 0%, #FF6B6B 100%);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .navbar-light .navbar-nav .nav-link {
+      color: white;
+    }
+    .navbar-light .navbar-nav .nav-link:hover {
+      color: rgba(255, 255, 255, 0.75);
+    }
+    footer {
+      background-color: #343a40;
+      color: white;
+      padding: 20px 0;
+      margin-top: 20px;
+    }
+    footer a {
+      color: white;
+    }
+    footer a:hover {
+      color: #adb5bd;
     }
 
-    .footer-title {
-        color: #ffffff !important;                   /* Pure white for headings */
-        font-weight: 600;
-        margin-bottom: 1rem;
+    /* Animations */
+    .navbar-brand {
+      opacity: 0;
+      transform: translateY(-20px);
+      animation: fadeInDown 1s forwards;
+    }
+    @keyframes fadeInDown {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
-    .footer-text {
-        color: #ffffff !important;                   /* Force pure white for footer body text */
-        font-size: 0.95rem;
+    .container {
+      opacity: 0;
+      animation: fadeIn 1s forwards 0.3s;
+    }
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+      }
     }
 
-    .footer-text a {
-        color: #ffffff !important;                   /* Ensure email/phone links stay white */
-        text-decoration: none;
-    }
-
-    .footer-text a:hover {
-        color: #10d3da !important;                   /* Yellow hover effect for links */
-    }
-
-    .footer-links li {
-        margin-bottom: 0.5rem;
-    }
-
-    .footer-links a {
-        color: #ffffff !important;                   /* White links for Quick Links */
-        text-decoration: none;
-        transition: color 0.3s ease;
-    }
-
-    .footer-links a:hover {
-        color: #10dada !important;                   /* Warm yellow on hover */
-    }
-
-    .footer-social {
-        display: inline-block;
-        margin-right: 15px;
-        color: #ffffff !important;
-        font-size: 1.25rem;
-        transition: color 0.3s ease, transform 0.3s ease;
+    .btn:hover {
+      transform: scale(1.05);
+      transition: transform 0.3s ease;
     }
 
     .footer-social:hover {
-        color: #ffffff !important;
-        transform: scale(1.2);
+      animation: bounce 0.4s;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
     }
 
+    /* Logo and chicken animation */
+    .logo-container {
+      display: flex;
+      align-items: center;
+    }
+
+    .food-nest-logo {
+      display: inline-block;
+      position: relative;
+      color: white;
+      font-family: 'Pacifico', cursive;
+      font-size: 2rem;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+      animation: gentlePulse 3s infinite;
+      margin-right: 10px;
+    }
+
+    @keyframes gentlePulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    .chicken-on-plate {
+      font-size: 2rem;
+      animation: floatAndRotate 4s ease-in-out infinite;
+    }
+
+    @keyframes floatAndRotate {
+      0% {
+        transform: translateY(0) rotate(0deg);
+      }
+      50% {
+        transform: translateY(-10px) rotate(5deg);
+      }
+      100% {
+        transform: translateY(0) rotate(0deg);
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+    <a class="navbar-brand" href="{% url 'home' %}">
+      <span class="logo-container">
+        <span class="food-nest-logo">
+          <span class="logo-text">Food Nest</span>
+        </span>
+        <span class="chicken-on-plate">🍗</span>
+      </span>
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'signin' %}">Sign In</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'signup' %}">Sign Up</a></li>
+        <li class="nav-item">
+          <form class="form-inline" action="{% url 'search' %}" method="get">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="q">
+            <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Search</button>
+          </form>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container">
+    {% block content %}
+    {% endblock %}
+  </div>
+
+  {% if request.resolver_match.url_name != 'signin' and request.resolver_match.url_name != 'signup' %}
+  <footer class="text-center footer-custom py-5">
+    <div class="container">
+      <div class="row text-start text-md-center">
+        <div class="col-md-4 mb-4 mb-md-0">
+          <h5 class="footer-title">About Us</h5>
+          <p class="footer-text">Welcome to Food Nest, your go-to platform for ordering delicious meals from local restaurants.</p>
+          <p><a href="{% url 'terms' %}">Terms and Conditions</a> <br> <a href="{% url 'privacy' %}">Privacy Policy</a>.</p>
+        </div>
+        <div class="col-md-4 mb-4 mb-md-0">
+          <h5 class="footer-title">Quick Links</h5>
+          <ul class="list-unstyled footer-links">
+            <li><a href="{% url 'home' %}">Home</a></li>
+            <li><a href="{% url 'restaurant_list' %}">Restaurants</a></li>
+            <li><a href="{% url 'signup' %}">Sign Up</a></li>
+            <li><a href="{% url 'signin' %}">Sign In</a></li>
+          </ul>
+        </div>
+        <div class="col-md-4">
+          <h5 class="footer-title">Contact Info</h5>
+          <p class="footer-text mb-1">Email: <a href="mailto:contact@foodnest.com">contact@foodnest.com</a></p>
+          <p class="footer-text">Phone: (123) 456-7890</p>
+          <div class="social-links mt-3">
+            <a href="{% url 'coming_soon' 'facebook' %}" class="footer-social"><i class="fab fa-facebook-f"></i></a>
+            <a href="{% url 'coming_soon' 'twitter' %}" class="footer-social"><i class="fab fa-twitter"></i></a>
+            <a href="{% url 'coming_soon' 'instagram' %}" class="footer-social"><i class="fab fa-instagram"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-4">
+        <div class="col-12">
+          <p class="mb-0 footer-copy">&copy; 2025 Food Nest. All rights reserved.</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <style>
+    .footer-custom {
+      background-color: #222;
+    }
+    .footer-title {
+      color: #ffffff !important;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+    .footer-text {
+      color: #ffffff !important;
+      font-size: 0.95rem;
+    }
+    .footer-text a {
+      color: #ffffff !important;
+      text-decoration: none;
+    }
+    .footer-text a:hover {
+      color: #10d3da !important;
+    }
+    .footer-links li {
+      margin-bottom: 0.5rem;
+    }
+    .footer-links a {
+      color: #ffffff !important;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    .footer-links a:hover {
+      color: #10dada !important;
+    }
+    .footer-social {
+      display: inline-block;
+      margin-right: 15px;
+      color: #ffffff !important;
+      font-size: 1.25rem;
+      transition: color 0.3s ease, transform 0.3s ease;
+    }
     .footer-copy {
-        color: #ffffff !important;                   /* Force copyright text to pure white */
-        font-size: 0.9rem;
+      color: #ffffff !important;
+      font-size: 0.9rem;
     }
-</style>
-{% endif %}
+  </style>
+  {% endif %}
 
-
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

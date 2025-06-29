@@ -5,11 +5,13 @@
 
 {% block content %}
 <div class="container my-5">
-    <h2 class="mb-4">Edit Food Item</h2>
-    <form method="post" enctype="multipart/form-data">
+    <h2 class="mb-4 text-center fw-bold">Edit Food Item</h2>
+    <form method="post" enctype="multipart/form-data" class="mx-auto" style="max-width: 600px;">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">Update Food Item</button>
+        <div class="mb-3">
+            {{ form.as_p }}
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Update Food Item</button>
     </form>
 </div>
 {% endblock %}

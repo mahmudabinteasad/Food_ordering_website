@@ -4,11 +4,107 @@
 {% block title %}Profile{% endblock %}
 
 {% block content %}
+<style>
+    body {
+        background-color: #f8f9fa;
+        font-family: 'Montserrat', sans-serif;
+    }
+
+    .container h2 {
+        font-weight: 700;
+        color: #343a40;
+        margin-top: 20px;
+        animation: fadeIn 1s ease forwards;
+    }
+
+    .card {
+        border: none;
+        border-radius: 1rem;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+        opacity: 0;
+        transform: translateY(20px);
+        animation: slideUp 0.8s forwards;
+    }
+
+    .card:nth-child(2) { animation-delay: 0.1s; }
+    .card:nth-child(3) { animation-delay: 0.2s; }
+    .card:nth-child(4) { animation-delay: 0.3s; }
+    .card:nth-child(5) { animation-delay: 0.4s; }
+    .card:nth-child(6) { animation-delay: 0.5s; }
+
+    .card-header {
+        background-color: #2f4f4f;
+        color: white;
+        border-radius: 1rem 1rem 0 0;
+    }
+
+    .card-header h5 {
+        margin-bottom: 0;
+        font-weight: 600;
+    }
+
+    .card-body p {
+        font-size: 1rem;
+        color: #555;
+        margin-bottom: 0.5rem;
+    }
+
+    .btn-primary {
+        background-color: #0066cc;
+        border: none;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background-color: #004999;
+        transform: translateY(-2px) scale(1.02);
+    }
+
+    .btn-info {
+        transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .btn-info:hover {
+        transform: translateY(-2px) scale(1.02);
+    }
+
+    .order-item, .payment-method, .address {
+        border: 1px solid #e0e0e0;
+        border-radius: 0.75rem;
+        padding: 1rem;
+        background-color: white;
+        transition: transform 0.3s ease;
+    }
+
+    .order-item:hover, .payment-method:hover, .address:hover {
+        transform: scale(1.02);
+    }
+
+    #loadMoreOrders {
+        display: block;
+        width: 100%;
+        font-weight: 500;
+    }
+
+    @keyframes slideUp {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+</style>
+
 <div class="container">
     <h2 class="text-center mb-4">Your Profile</h2>
 
     <!-- User Information -->
-    <div class="card mb-4">
+    <div class="card">
         <div class="card-header">
             <h5>Personal Information</h5>
         </div>
@@ -21,7 +117,7 @@
     </div>
 
     <!-- Order History -->
-    <div class="card mb-4">
+    <div class="card">
         <div class="card-header">
             <h5>Order History</h5>
         </div>
@@ -39,13 +135,13 @@
                 {% endfor %}
             </div>
             {% if orders.has_next %}
-            <button id="loadMoreOrders" class="btn btn-primary" data-page="{{ orders.next_page_number }}">Load More</button>
+            <button id="loadMoreOrders" class="btn btn-primary mt-3" data-page="{{ orders.next_page_number }}">Load More</button>
             {% endif %}
         </div>
     </div>
 
     <!-- Payment Methods -->
-    <div class="card mb-4">
+    <div class="card">
         <div class="card-header">
             <h5>Payment Methods</h5>
         </div>
@@ -65,7 +161,7 @@
     </div>
 
     <!-- Delivery Addresses -->
-    <div class="card mb-4">
+    <div class="card">
         <div class="card-header">
             <h5>Delivery Addresses</h5>
         </div>
@@ -86,7 +182,7 @@
     </div>
 
     <!-- Preferences -->
-    <div class="card mb-4">
+    <div class="card">
         <div class="card-header">
             <h5>Preferences</h5>
         </div>
@@ -98,30 +194,30 @@
         </div>
     </div>
 </div>
+
 <script>
-    document.getElementById('loadMoreOrders').addEventListener('click', function() {
-        const button = this;
-        const page = button.getAttribute('data-page');
-
-        fetch(`?page=${page}`)
-            .then(response => response.text())
-            .then(html => {
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(html, 'text/html');
-                const newOrders = doc.querySelectorAll('#orderHistory .order-item');
-
-                newOrders.forEach(order => {
-                    document.getElementById('orderHistory').appendChild(order);
-                });
-
-                const nextPage = parseInt(page) + 1;
-                if (doc.getElementById('loadMoreOrders')) {
-                    button.setAttribute('data-page', nextPage);
-                } else {
-                    button.style.display = 'none';
-                }
-            })
-            .catch(error => console.error('Error:', error));
-    });
+    const loadMoreButton = document.getElementById('loadMoreOrders');
+    if (loadMoreButton) {
+        loadMoreButton.addEventListener('click', function() {
+            const page = this.getAttribute('data-page');
+            fetch(`?page=${page}`)
+                .then(response => response.text())
+                .then(html => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const newOrders = doc.querySelectorAll('#orderHistory .order-item');
+                    newOrders.forEach(order => {
+                        document.getElementById('orderHistory').appendChild(order);
+                    });
+                    const nextPage = parseInt(page) + 1;
+                    if (doc.getElementById('loadMoreOrders')) {
+                        this.setAttribute('data-page', nextPage);
+                    } else {
+                        this.style.display = 'none';
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    }
 </script>
 {% endblock %}

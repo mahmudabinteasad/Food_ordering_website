@@ -4,8 +4,76 @@
 {% block title %}Food Nest - Browse Restaurants{% endblock %}
 
 {% block content %}
+<style>
+/* Fade in cards on scroll */
+.fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.6s ease-out;
+}
+
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Hover scale for cards */
+.card:hover {
+  transform: scale(1.03);
+  transition: transform 0.3s ease;
+}
+
+/* Animated section headings with underline */
+.animated-heading-wrapper {
+  text-align: center;
+  margin-bottom: 1rem;
+  position: relative;
+}
+
+.animated-heading {
+  display: inline-block;
+  font-weight: 600;
+  color: #212529;
+  animation: bounceIn 1s ease forwards;
+  position: relative;
+}
+
+.animated-heading::after {
+  content: '';
+  display: block;
+  width: 60%;
+  height: 3px;
+  background: linear-gradient(90deg, #FF9F1C, #FF6B6B);
+  margin: 8px auto 0;
+  border-radius: 2px;
+  animation: underlineSlide 1s ease forwards;
+}
+
+@keyframes bounceIn {
+  0% { transform: scale(0.8); opacity: 0; }
+  60% { transform: scale(1.1); opacity: 1; }
+  100% { transform: scale(1); }
+}
+
+@keyframes underlineSlide {
+  0% { width: 0; opacity: 0; }
+  100% { width: 60%; opacity: 1; }
+}
+
+/* Button hover pulse */
+.btn:hover {
+  animation: pulse 0.6s;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+</style>
+
 <!-- Search Bar -->
-<div class="container my-4">
+<div class="container my-4 fade-in">
     <form class="form-inline d-flex justify-content-center" action="{% url 'search' %}" method="get">
         <input class="form-control me-2 shadow-sm" type="search" placeholder="Search by restaurant name or food item" aria-label="Search" name="q" style="width: 300px;">
         <button class="btn btn-outline-success" type="submit">Search</button>
@@ -13,13 +81,15 @@
 </div>
 
 <!-- Featured Restaurants Section -->
-<section class="bg-light py-5">
+<section class="bg-light py-5 fade-in">
     <div class="container">
-        <h2 class="text-center fw-semibold text-dark">🔥 Featured Restaurants</h2>
+        <div class="animated-heading-wrapper">
+            <h2 class="animated-heading">🔥 Featured Restaurants</h2>
+        </div>
         <p class="text-center text-muted mb-4">Don't miss today's best offers!</p>
         <div class="row">
             {% for deal in featured_restaurants %}
-                <div class="col-md-3 mb-4">
+                <div class="col-md-3 mb-4 fade-in">
                     <div class="card h-100 shadow-sm border-0">
                         {% if deal.image %}
                             <img src="{{ deal.image.url }}" class="card-img-top" alt="Featured Restaurant">
@@ -42,12 +112,14 @@
 <div class="my-5"></div>
 
 <!-- All Restaurants Section -->
-<section>
+<section class="fade-in">
     <div class="container">
-        <h2 class="text-center fw-semibold text-dark mb-4">Explore Restaurants</h2>
+        <div class="animated-heading-wrapper">
+            <h2 class="animated-heading">Explore Restaurants</h2>
+        </div>
         <div class="row" id="restaurant-list">
             {% for restaurant in restaurants_page %}
-                <div class="col-md-4 mb-4">
+                <div class="col-md-4 mb-4 fade-in">
                     <div class="card h-100 shadow-sm border-0">
                         {% if restaurant.image %}
                             <img src="{{ restaurant.image.url }}" class="card-img-top" alt="Restaurant Image">
@@ -73,8 +145,29 @@
     </div>
 </section>
 
-<!-- JavaScript to Handle Load More Button -->
+<!-- JavaScript for scroll fade-in + Load More -->
 <script>
+// Fade in elements when they appear in viewport
+function isInViewport(el) {
+  const rect = el.getBoundingClientRect();
+  return (
+    rect.top <= (window.innerHeight || document.documentElement.clientHeight)
+  );
+}
+
+function showElementsOnScroll() {
+  const elements = document.querySelectorAll('.fade-in');
+  elements.forEach(el => {
+    if (isInViewport(el)) {
+      el.classList.add('visible');
+    }
+  });
+}
+
+document.addEventListener('scroll', showElementsOnScroll);
+window.addEventListener('load', showElementsOnScroll);
+
+// Load more button handler
 document.getElementById('load-more-btn')?.addEventListener('click', function () {
     const button = this;
     const page = button.getAttribute('data-page');
@@ -96,6 +189,8 @@ document.getElementById('load-more-btn')?.addEventListener('click', function () 
             } else {
                 button.style.display = 'none';
             }
+
+            showElementsOnScroll(); // fade in new elements
         })
         .catch(error => console.error('Error loading more restaurants:', error));
 });

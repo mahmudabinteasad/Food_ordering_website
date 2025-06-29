@@ -8,24 +8,27 @@
 <div class="jumbotron text-center full-width-jumbotron">
     <h1 class="display-4 fw-bold mb-3">Welcome to <span class="text-accent">Food Nest</span></h1>
     <p class="lead mb-4">Order your favorite meals from local restaurants with ease.</p>
-<a href="{% url 'signup' %}" class="btn btn-lg me-2" style="background-color: #8a2626; border-color: #ffffff; color: white; border-radius: 50px;">Sign Up</a>
+    <a href="{% url 'signup' %}" class="btn btn-lg me-2 btn-accent">Sign Up</a>
     <a href="{% url 'signin' %}" class="btn btn-outline-light btn-lg">Sign In</a>
 </div>
 
 <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@400;500&display=swap');
+
     body {
         overflow-x: hidden;
-        font-family: 'Poppins', sans-serif;
+        font-family: 'Montserrat', sans-serif;
         background-color: #fdfdfd;
         color: #333;
     }
 
     .text-accent {
         color: #780606;
+        font-family: 'Playfair Display', serif;
     }
 
     .full-width-jumbotron {
-        background: linear-gradient(135deg,#c3a72a,#de533d);
+        background: linear-gradient(135deg, #c3a72a, #de533d);
         color: white;
         padding: 4rem 1rem;
         margin-bottom: 4rem;
@@ -37,17 +40,19 @@
         margin-left: -50vw;
         margin-right: -50vw;
         box-sizing: border-box;
-        text-shadow: 1px 1px 5px rgba(0,0,0,0.3);
+        text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
+        font-family: 'Montserrat', sans-serif;
     }
 
-    /* ONLY THIS ADDED: Increase hero text sizes */
     .full-width-jumbotron h1.display-4 {
         font-size: 7rem;
         line-height: 1.1;
+        font-family: 'Playfair Display', serif;
     }
 
     .full-width-jumbotron p.lead {
         font-size: 1.75rem;
+        font-family: 'Montserrat', sans-serif;
     }
 
     .btn-accent {
@@ -56,6 +61,8 @@
         color: white;
         border-radius: 50px;
         transition: all 0.3s ease;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 600;
     }
 
     .btn-accent:hover, .btn-outline-light:hover {
@@ -63,28 +70,38 @@
         opacity: 0.9;
     }
 
+    .btn-outline-light {
+        border-radius: 50px;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 600;
+    }
+
     .carousel-inner img {
         border-radius: 1rem;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
     }
 
     .carousel-caption h5 {
         font-size: 1.8rem;
         font-weight: 600;
-        text-shadow: 1px 1px 5px rgba(0,0,0,0.6);
+        text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.6);
+        font-family: 'Playfair Display', serif;
     }
 
     .carousel-caption p {
         font-size: 1rem;
+        font-family: 'Montserrat', sans-serif;
     }
 
     .container h2, .container h3, .container h4 {
         color: #222;
         font-weight: 700;
+        font-family: 'Playfair Display', serif;
     }
 
     .container p {
         color: #0a0800;
+        font-family: 'Montserrat', sans-serif;
     }
 
     .card {
@@ -94,16 +111,17 @@
 
     .card:hover {
         transform: translateY(-5px);
-        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
     }
 
     .container-fluid {
         border-radius: 1rem;
-        box-shadow: inset 0 0 20px rgba(0,0,0,0.05);
+        box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.05);
     }
 
     .btn {
         border-radius: 50px;
+        font-family: 'Montserrat', sans-serif;
     }
 
     .btn-warning, .btn-info, .btn-success {
@@ -119,7 +137,8 @@
         color: #333;
         border-radius: 1rem;
         padding: 2rem;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        font-family: 'Montserrat', sans-serif;
     }
 </style>
 
@@ -389,8 +408,73 @@
 
 
 <!-- Special Offers -->
-<div class="container text-center my-5">
+<style>
+    .special-offer {
+        animation: fadeInUp 1s ease forwards;
+        opacity: 0;
+        margin-top: 50px;
+        margin-bottom: 50px;
+    }
+
+    .special-offer h2 {
+        font-size: 2.5rem;
+        color: #007bff;
+        text-shadow: 0 0 10px rgba(0, 123, 255, 0.4);
+        animation: glow 2s ease-in-out infinite alternate;
+    }
+
+    .special-offer p {
+        font-size: 1.25rem;
+        color: #343a40;
+    }
+
+    .special-offer strong {
+        background-color: #ffc107;
+        color: #212529;
+        padding: 4px 10px;
+        border-radius: 5px;
+        animation: pulse 1.5s infinite;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes glow {
+        from {
+            text-shadow: 0 0 10px rgba(0, 123, 255, 0.4);
+        }
+        to {
+            text-shadow: 0 0 20px rgba(0, 123, 255, 0.8);
+        }
+    }
+
+    @keyframes pulse {
+        0% {
+            transform: scale(1);
+            box-shadow: 0 0 0 rgba(255, 193, 7, 0.7);
+        }
+        50% {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(255, 193, 7, 0.7);
+        }
+        100% {
+            transform: scale(1);
+            box-shadow: 0 0 0 rgba(255, 193, 7, 0.7);
+        }
+    }
+</style>
+
+<div class="container text-center special-offer">
     <h2>Special Offers</h2>
     <p>Get 10% off your first order! Use code: <strong>WELCOME10</strong></p>
 </div>
+
 {% endblock %}

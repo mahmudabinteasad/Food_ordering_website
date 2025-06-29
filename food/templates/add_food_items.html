@@ -1,16 +1,81 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<style>
+/* Container styling */
+#foodItemsForm {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    max-width: 900px;
+    margin: 2rem auto;
+}
+
+/* Heading styling */
+h2 {
+    text-align: center;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    text-transform: uppercase;
+}
+
+/* Food item form card */
+.food-item-form {
+    background: #f9f9f9;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.5s ease;
+}
+
+.food-item-form.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Buttons styling */
+.btn {
+    min-width: 180px;
+    transition: transform 0.3s ease;
+}
+
+.btn:hover {
+    transform: scale(1.05);
+}
+
+/* Center the buttons */
+#foodItemsForm button {
+    display: inline-block;
+    margin: 0.5rem 0.5rem 0 0;
+}
+
+/* Form fields spacing */
+.food-item-form input,
+.food-item-form textarea,
+.food-item-form select {
+    margin-bottom: 1rem;
+}
+</style>
+<br>
+<br>
+
 <h2>Add Food Items for {{ restaurant.name }}</h2>
+
 <form id="foodItemsForm" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <div id="form-container">
-        <div class="food-item-form">
+        <div class="food-item-form visible">
             {{ form.as_p }}
         </div>
     </div>
-    <button type="button" id="add-more" class="btn btn-secondary">Add Another Food Item</button>
-    <button type="submit" class="btn btn-primary">Submit All Food Items</button>
+    <div class="text-center mt-4">
+        <button type="button" id="add-more" class="btn btn-outline-secondary">+ Add Another Food Item</button>
+        <button type="submit" class="btn btn-primary">Submit All Food Items</button>
+    </div>
 </form>
 
 {% block scripts %}
@@ -24,11 +89,13 @@ document.addEventListener('DOMContentLoaded', function() {
         const newForm = document.createElement('div');
         newForm.className = 'food-item-form';
         newForm.innerHTML = formTemplate.replace(/id_(\w+)_\d+/g, function(match, p1) {
-            // Increment the index for new form fields
             const totalForms = document.querySelectorAll('.food-item-form').length;
             return `id_${p1}_${totalForms}`;
         });
         container.appendChild(newForm);
+
+        // Animate newly added form
+        setTimeout(() => newForm.classList.add('visible'), 10);
     });
 });
 </script>

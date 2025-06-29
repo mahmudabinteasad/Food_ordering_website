@@ -1,76 +1,265 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}GrabNow{% endblock %}</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-    <style>
-        body {
-            padding-top: 56px;
-        }
-        .navbar {
-            margin-bottom: 20px;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}GrabNow{% endblock %}</title>
+  <link
+    rel="stylesheet"
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+  />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    body {
+      padding-top: 56px;
+    }
+    .navbar {
+      margin-bottom: 20px;
+      background: linear-gradient(90deg, #ff9f1c 0%, #ff6b6b 100%);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .navbar-light .navbar-nav .nav-link {
+      color: white;
+    }
+    .navbar-light .navbar-nav .nav-link:hover {
+      color: rgba(255, 255, 255, 0.75);
+    }
+
+    /* Animated logo styling */
+    .logo-container {
+      display: flex;
+      align-items: center;
+    }
+    .food-nest-logo {
+      font-family: "Pacifico", cursive;
+      font-size: 2rem;
+      color: white;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+      animation: gentlePulse 3s infinite;
+      margin-right: 10px;
+    }
+    @keyframes gentlePulse {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+    .chicken-on-plate {
+      font-size: 2rem;
+      animation: floatAndRotate 4s ease-in-out infinite;
+    }
+    @keyframes floatAndRotate {
+      0% {
+        transform: translateY(0) rotate(0deg);
+      }
+      50% {
+        transform: translateY(-10px) rotate(5deg);
+      }
+      100% {
+        transform: translateY(0) rotate(0deg);
+      }
+    }
+    /* Dark Theme Base */
+    .dark-theme {
+      background-color: #121212;
+      color: #e0e0e0;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    /* Navbar Dark Override */
+    .dark-theme .navbar {
+      background: linear-gradient(90deg, #2c3e50 0%, #34495e 100%) !important;
+      box-shadow: none;
+    }
+
+    .dark-theme .navbar-light .nav-link {
+      color: #ccc !important;
+      transition: color 0.3s ease;
+    }
+
+    .dark-theme .navbar-light .nav-link:hover,
+    .dark-theme .navbar-light .nav-link:focus {
+      color: #fff !important;
+    }
+
+    /* Dropdown menu in navbar */
+    .dark-theme .dropdown-menu {
+      background-color: #2c3e50;
+      color: #ccc;
+    }
+
+    .dark-theme .dropdown-item {
+      color: #ccc;
+    }
+
+    .dark-theme .dropdown-item:hover,
+    .dark-theme .dropdown-item:focus {
+      background-color: #3a5068;
+      color: white;
+    }
+
+    /* Container background (if you want) */
+    .dark-theme .container {
+      background-color: #1c1c1c;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
+    }
+
+    /* Buttons */
+    .dark-theme .btn-primary {
+      background-color: #3a5068;
+      border-color: #3a5068;
+      color: #e0e0e0;
+      transition: background-color 0.3s ease;
+    }
+
+    .dark-theme .btn-primary:hover,
+    .dark-theme .btn-primary:focus {
+      background-color: #526d82;
+      border-color: #526d82;
+      color: white;
+    }
+
+    /* Links */
+    .dark-theme a {
+      color: #7ec8e3;
+      transition: color 0.3s ease;
+    }
+
+    .dark-theme a:hover {
+      color: #a0d8ef;
+    }
+
+    /* Cards or other components you want to darken */
+    .dark-theme .card {
+      background-color: #222;
+      color: #ddd;
+      border: 1px solid #333;
+    }
+
+    /* Scrollbar for dark mode (optional) */
+    .dark-theme ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .dark-theme ::-webkit-scrollbar-track {
+      background: #1e1e1e;
+    }
+
+    .dark-theme ::-webkit-scrollbar-thumb {
+      background-color: #555;
+      border-radius: 4px;
+    }
+  </style>
 </head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
-        <a class="navbar-brand" href="{% url 'home' %}">Food Nest</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ml-auto">
-                {% if request.resolver_match.url_name != 'restaurant_page' %}
-                    <!-- Show these items for non-restaurant pages -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'home' %}">Home</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            {{ username }}
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="{% url 'profile' %}">Profile</a>
-                            <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
-                        </div>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'cart' %}">
-                            Cart <span class="badge bg-danger">{{ total_items }}</span>
-                        </a>
-                    </li>
-                {% else %}
-                    <!-- Show only Logout button and Delete button for restaurant page -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'logout' %}">Logout</a>
-                    </li>
-                    <li class="nav-item">
-                        <button class="nav-link btn btn-link" style="cursor: pointer;" onclick="confirmDelete('{{ restaurant.restaurant_id }}')">Delete</button>
-                    </li>
-                {% endif %}
-            </ul>
-        </div>
-    </nav>
-    <div class="container">
-        {% block content %}
-        {% endblock %}
+<body class="{% if preferences and preferences.theme == 'Dark' %}dark-theme{% endif %}">
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+    <a class="navbar-brand" href="{% url 'home' %}">
+      <span class="logo-container">
+        <span class="food-nest-logo">Food Nest</span>
+        <span class="chicken-on-plate">🍗</span>
+      </span>
+    </a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-toggle="collapse"
+      data-target="#navbarNav"
+      aria-controls="navbarNav"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ml-auto">
+        {% if request.resolver_match.url_name != 'restaurant_page' %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'home' %}">Home</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a
+            class="nav-link dropdown-toggle"
+            href="#"
+            id="navbarDropdown"
+            role="button"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+            >{{ username }}</a
+          >
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="{% url 'profile' %}">Profile</a>
+            <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'cart' %}">
+            Cart <span class="badge bg-danger">{{ total_items }}</span>
+          </a>
+        </li>
+        {% else %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+        </li>
+        <li class="nav-item">
+          <button
+            class="nav-link btn btn-link"
+            style="cursor: pointer;"
+            onclick="confirmDelete('{{ restaurant.restaurant_id }}')"
+          >
+            Delete
+          </button>
+        </li>
+        {% endif %}
+      </ul>
     </div>
+  </nav>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <div class="container mt-3">
+    {% if messages %}
+      {% for message in messages %}
+        <div
+          class="alert alert-{{ message.tags }} alert-dismissible fade show"
+          role="alert"
+        >
+          {{ message }}
+          <button
+            type="button"
+            class="close"
+            data-dismiss="alert"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      {% endfor %}
+    {% endif %}
+  </div>
 
-    <script>
-        function confirmDelete(restaurantId) {
-            if (confirm('Are you sure you want to delete this restaurant?')) {
-                // Redirect to the delete URL with the correct restaurantId
-                window.location.href = `/restaurant/${restaurantId}/delete/`;
-            }
-        }
-    </script>
+  <div class="container">
+    {% block content %}
+    {% endblock %}
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script>
+    function confirmDelete(restaurantId) {
+      if (confirm("Are you sure you want to delete this restaurant?")) {
+        window.location.href = `/restaurant/${restaurantId}/delete/`;
+      }
+    }
+  </script>
 </body>
 </html>

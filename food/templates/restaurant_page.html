@@ -4,9 +4,66 @@
 {% block title %}{{ restaurant.name }}{% endblock %}
 
 {% block content %}
-<div class="container my-5">
+<style>
+/* Fade-in on scroll */
+.fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.6s ease-out;
+}
+
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Card hover effect */
+.card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Section headings */
+.section-heading {
+  text-align: center;
+  font-weight: 600;
+  text-transform: uppercase;
+  position: relative;
+  display: inline-block;
+}
+
+.section-heading::after {
+  content: '';
+  display: block;
+  width: 60%;
+  height: 3px;
+  background: linear-gradient(90deg, #FF9F1C, #FF6B6B);
+  margin: 8px auto 0;
+  border-radius: 2px;
+  animation: slideIn 1s ease forwards;
+}
+
+@keyframes slideIn {
+  0% { width: 0; opacity: 0; }
+  100% { width: 60%; opacity: 1; }
+}
+
+/* Buttons pulse on hover */
+.btn:hover {
+  animation: pulse 0.5s;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+</style>
+
+<div class="container my-5 fade-in">
     <!-- Restaurant Info Section -->
-    <div class="row align-items-center mb-4">
+    <div class="row align-items-center mb-4 fade-in">
         <div class="col-md-6 mb-3 mb-md-0">
             {% if restaurant.image %}
                 <img src="{{ restaurant.image.url }}" class="img-fluid rounded shadow-sm" alt="{{ restaurant.name }}">
@@ -19,18 +76,18 @@
             <p class="mb-2"><i class="bi bi-geo-alt-fill me-2 text-primary"></i><strong>Address:</strong> {{ restaurant.address }}</p>
             <p class="mb-2"><i class="bi bi-envelope-fill me-2 text-primary"></i><strong>Email:</strong> {{ restaurant.email }}</p>
             <p class="mb-3"><i class="bi bi-telephone-fill me-2 text-primary"></i><strong>Phone:</strong> {{ restaurant.phone }}</p>
-            <a href="{% url 'edit_restaurant' restaurant.pk %}" class="btn btn-outline-primary btn-sm">Edit Restaurant Info.</a>
+            <a href="{% url 'edit_restaurant' restaurant.pk %}" class="btn btn-outline-primary btn-sm me-2">Edit Restaurant Info</a>
             <a href="{% url 'add_food_items' restaurant.pk %}" class="btn btn-outline-success btn-sm">+ Add Food Item</a>
         </div>
     </div>
 
     <!-- Food Items Section -->
-    <div class="mb-4">
-        <h2 class="mb-4 text-center text-uppercase fw-semibold border-bottom pb-2">Menu Items</h2>
+    <div class="mb-4 fade-in">
+        <h2 class="mb-4 section-heading">Menu Items</h2>
         {% if food_items %}
         <div class="row">
             {% for item in food_items %}
-            <div class="col-sm-6 col-md-4 mb-4">
+            <div class="col-sm-6 col-md-4 mb-4 fade-in">
                 <div class="card h-100 shadow-sm">
                     {% if item.image %}
                         <img src="{{ item.image.url }}" class="card-img-top" alt="{{ item.name }}">
@@ -38,7 +95,7 @@
                         <img src="{% static 'images/default_food.jpg' %}" class="card-img-top" alt="Default Food Image">
                     {% endif %}
                     <div class="card-body d-flex flex-column">
-                       <h5 class="card-title">{{ item.name }}</h5>
+                        <h5 class="card-title">{{ item.name }}</h5>
                         <p class="card-text flex-grow-1">{{ item.description }}</p>
                         <p class="card-text mt-2"><strong>Price:</strong> ${{ item.price }}</p>
                         <div class="d-flex mt-2">
@@ -58,4 +115,23 @@
         {% endif %}
     </div>
 </div>
+
+<script>
+// Scroll fade-in handler
+function isInViewport(el) {
+  const rect = el.getBoundingClientRect();
+  return rect.top <= (window.innerHeight || document.documentElement.clientHeight);
+}
+
+function revealOnScroll() {
+  document.querySelectorAll('.fade-in').forEach(el => {
+    if (isInViewport(el)) {
+      el.classList.add('visible');
+    }
+  });
+}
+
+document.addEventListener('scroll', revealOnScroll);
+window.addEventListener('load', revealOnScroll);
+</script>
 {% endblock %}

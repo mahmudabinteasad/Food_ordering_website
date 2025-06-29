@@ -3,10 +3,131 @@
 {% block title %}Sign Up{% endblock %}
 
 {% block content %}
-<h2>Sign Up</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Sign Up</button>
-</form>
+<style>
+    body {
+        background: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center fixed;
+        background-size: cover;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
+
+    .signup-container {
+        background-color: rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(5px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+    }
+
+    .signup-card {
+        background: white;
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        width: 100%;
+        max-width: 400px;
+        animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+        0% {
+            transform: translateY(0px);
+        }
+        50% {
+            transform: translateY(-10px);
+        }
+        100% {
+            transform: translateY(0px);
+        }
+    }
+
+    .signup-card h2 {
+        margin-bottom: 1.5rem;
+        color: #343a40;
+        text-align: center;
+        font-weight: 600;
+    }
+
+    .form-group {
+        position: relative;
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        position: absolute;
+        top: -10px;
+        left: 10px;
+        background-color: white;
+        padding: 0 5px;
+        color: #495057;
+        font-size: 0.9rem;
+    }
+
+    .form-control {
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ced4da;
+        width: 100%;
+    }
+
+    .btn-signup {
+        width: 100%;
+        padding: 0.75rem;
+        background-color: #28a745;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        font-weight: 500;
+        transition: background-color 0.3s ease;
+        margin-bottom: 1rem;
+    }
+
+    .btn-signup:hover {
+        background-color: #218838;
+    }
+
+    .signup-footer {
+        font-size: 0.9rem;
+        color: #6c757d;
+        margin-top: 1rem;
+        text-align: center;
+    }
+
+    .signup-footer a {
+        color: #28a745;
+        text-decoration: none;
+    }
+
+    .signup-footer a:hover {
+        text-decoration: underline;
+    }
+</style>
+
+<div class="signup-container">
+    <div class="signup-card">
+        <h2>Sign Up</h2>
+        <form method="post">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn-signup">Sign Up</button>
+        </form>
+        <div class="signup-footer">
+            <p>Already have an account? <a href="{% url 'signin' %}">Sign in</a></p>
+            <p>By signing up, you agree to our <a href="{% url 'terms' %}">Terms and Conditions</a> and <a href="{% url 'privacy' %}">Privacy Policy</a>.</p>
+        </div>
+    </div>
+</div>
+
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 {% endblock %}

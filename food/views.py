@@ -82,6 +82,16 @@ def search(request):
         'username': username
     })
 
+def terms(request):
+    return render(request, 'terms_and_conditions.html')
+
+def privacy(request):
+    return render(request, 'privacy_policy.html')
+
+def coming_soon(request, platform):
+    context = {'platform': platform.capitalize()}
+    return render(request, 'coming_soon.html', context)
+
 def menu(request, restaurant_id):
     restaurant = get_object_or_404(Restaurant, restaurant_id=restaurant_id)
     search_query = request.GET.get('q', '')
