@@ -5,117 +5,145 @@
 
 {% block content %}
 <style>
-  /* Fade-in and slide-up animation */
-  @keyframes fadeSlideUp {
-    0% {
+  body {
+    padding-top: 90px; /* Adjust this value to push the content lower */
+  }
+
+  /* Fade-in animation */
+  @keyframes fadeIn {
+    from {
       opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .animated-fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+  }
+
+  /* Slide-up animation */
+  @keyframes slideUp {
+    from {
       transform: translateY(20px);
     }
-    100% {
-      opacity: 1;
+    to {
       transform: translateY(0);
     }
   }
-  .animated-fade-slide {
-    animation: fadeSlideUp 0.6s ease forwards;
+
+  .animated-slide-up {
+    animation: slideUp 0.5s ease-out forwards;
   }
 
-  /* Delay for stagger effect */
-  .animated-fade-slide.delay-1 { animation-delay: 0.2s; }
-  .animated-fade-slide.delay-2 { animation-delay: 0.4s; }
-  .animated-fade-slide.delay-3 { animation-delay: 0.6s; }
-  .animated-fade-slide.delay-4 { animation-delay: 0.8s; }
+  /* Transition for interactive elements */
+  .btn {
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+
+  .btn:hover {
+    transform: scale(1.05);
+  }
+
+  /* Card hover effect */
+  .card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  }
 </style>
 
 <div class="container">
-    <!-- Restaurant Header Info -->
-    <div class="row mb-4 animated-fade-slide delay-1">
-        <div class="col-md-4">
-            <br>
-            <img src="{{ restaurant.image.url }}" class="img-fluid rounded shadow-sm" alt="Restaurant Photo">
-        </div>
-        <div class="col-md-8">
-            <br>
-            <h1 class="mb-3">{{ restaurant.name }}</h1>
-            <p><strong>Address:</strong> {{ restaurant.address }}</p>
-            <p><strong>Phone:</strong> {{ restaurant.phone }}</p>
-            <p><strong>Delivery Charge:</strong> ${{ restaurant.delivery_charge }}</p>
-            <p><strong>Minimum Order:</strong> ${{ restaurant.min_order }}</p>
-            <p><strong>Open Until:</strong> {{ restaurant.open_until }}</p>
-            <button class="btn btn-outline-info mt-3" data-toggle="modal" data-target="#restaurantMoreInfoModal">
-                More Info
-            </button>
-        </div>
+  <!-- Restaurant Header Info -->
+  <div class="row mb-4 animated-fade-in">
+    <div class="col-md-4 animated-slide-up">
+      <img src="{{ restaurant.image.url }}" class="img-fluid rounded shadow-sm" alt="Restaurant Photo">
     </div>
+    <div class="col-md-8 animated-slide-up">
+      <h1 class="mb-3">{{ restaurant.name }}</h1>
+      <p><strong>Address:</strong> {{ restaurant.address }}</p>
+      <p><strong>Phone:</strong> {{ restaurant.phone }}</p>
+      <p><strong>Delivery Charge:</strong> ${{ restaurant.delivery_charge }}</p>
+      <p><strong>Minimum Order:</strong> ${{ restaurant.min_order }}</p>
+      <p><strong>Open Until:</strong> {{ restaurant.open_until }}</p>
+      <button class="btn btn-outline-info mt-3" data-toggle="modal" data-target="#restaurantMoreInfoModal">
+        More Info
+      </button>
+    </div>
+  </div>
 
-    <!-- More Info Modal -->
-    <div class="modal fade" id="restaurantMoreInfoModal" tabindex="-1" role="dialog" aria-labelledby="moreInfoLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">{{ restaurant.name }} - More Info</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+  <!-- More Info Modal -->
+  <div class="modal fade" id="restaurantMoreInfoModal" tabindex="-1" role="dialog" aria-labelledby="moreInfoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">{{ restaurant.name }} - More Info</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p><strong>Address:</strong> {{ restaurant.address }}</p>
+          <p><strong>Open Until:</strong> {{ restaurant.open_until }}</p>
+          <p><strong>Weekly Schedule:</strong></p>
+          <ul>
+            <li>Monday: 10:00 AM - 10:00 PM</li>
+            <li>Tuesday: 10:00 AM - 10:00 PM</li>
+            <li>Wednesday: 10:00 AM - 10:00 PM</li>
+            <li>Thursday: 10:00 AM - 10:00 PM</li>
+            <li>Friday: 10:00 AM - 11:00 PM</li>
+            <li>Saturday: 10:00 AM - 11:00 PM</li>
+            <li>Sunday: Closed</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Menu Section -->
+  <h2 class="mb-4 animated-fade-in">Menu</h2>
+
+  <!-- Search Bar -->
+  <form method="GET" class="form-inline mb-4 animated-slide-up">
+    <input type="text" name="q" class="form-control mr-2 flex-grow-1" placeholder="Search for food..." value="{{ request.GET.q }}">
+    <button type="submit" class="btn btn-secondary">Search</button>
+  </form>
+
+  <!-- Food Items -->
+  <div class="row">
+    {% for item in food_items %}
+    <div class="col-md-6 mb-4">
+      <div class="card h-100 shadow-sm border-0 rounded animated-fade-in">
+        <div class="row no-gutters">
+          <div class="col-md-4">
+            <img src="{{ item.image.url }}" class="card-img rounded-start" alt="{{ item.name }}">
+          </div>
+          <div class="col-md-8">
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title">{{ item.name }}</h5>
+              <p class="card-text flex-grow-1">{{ item.description|truncatechars:100 }}</p>
+              <p><strong>Price:</strong> ${{ item.price }}</p>
+              <!-- Form for selecting quantity -->
+              <form method="POST" action="{% url 'add_to_cart' item.food_id %}">
+                {% csrf_token %}
+                <div class="form-group mb-2">
+                  <label for="quantity_{{ forloop.counter }}">Quantity:</label>
+                  <input type="number" name="quantity" id="quantity_{{ forloop.counter }}" class="form-control" value="1" min="1">
                 </div>
-                <div class="modal-body">
-                    <p><strong>Address:</strong> {{ restaurant.address }}</p>
-                    <p><strong>Open Until:</strong> {{ restaurant.open_until }}</p>
-                    <p><strong>Weekly Schedule:</strong></p>
-                    <ul>
-                        <li>Monday: 10:00 AM - 10:00 PM</li>
-                        <li>Tuesday: 10:00 AM - 10:00 PM</li>
-                        <li>Wednesday: 10:00 AM - 10:00 PM</li>
-                        <li>Thursday: 10:00 AM - 10:00 PM</li>
-                        <li>Friday: 10:00 AM - 11:00 PM</li>
-                        <li>Saturday: 10:00 AM - 11:00 PM</li>
-                        <li>Sunday: Closed</li>
-                    </ul>
-                </div>
+                <button type="submit" class="btn btn-primary w-100">Add to Cart</button>
+              </form>
             </div>
+          </div>
         </div>
+      </div>
     </div>
-
-    <!-- Menu Section -->
-    <h2 class="mb-4 animated-fade-slide delay-2">Menu</h2>
-
-    <!-- Search Bar -->
-    <form method="GET" class="form-inline mb-4 animated-fade-slide delay-3">
-        <input type="text" name="q" class="form-control mr-2 flex-grow-1" placeholder="Search for food..." value="{{ request.GET.q }}">
-        <button type="submit" class="btn btn-secondary">Search</button>
-    </form>
-
-    <!-- Food Items -->
-    <div class="row">
-        {% for item in food_items %}
-        <div class="col-md-6 mb-4 animated-fade-slide delay-{{ forloop.counter|add:"3" }}">
-            <div class="card h-100 shadow-sm border-0 rounded">
-                <div class="row no-gutters">
-                    <div class="col-md-4">
-                        <img src="{{ item.image.url }}" class="card-img rounded-start" alt="{{ item.name }}">
-                    </div>
-                    <div class="col-md-8">
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title">{{ item.name }}</h5>
-                            <p class="card-text flex-grow-1">{{ item.description|truncatechars:100 }}</p>
-                            <p><strong>Price:</strong> ${{ item.price }}</p>
-                            <!-- Form for selecting quantity -->
-                            <form method="POST" action="{% url 'add_to_cart' item.food_id %}">
-                                {% csrf_token %}
-                                <div class="form-group mb-2">
-                                    <label for="quantity_{{ forloop.counter }}">Quantity:</label>
-                                    <input type="number" name="quantity" id="quantity_{{ forloop.counter }}" class="form-control" value="1" min="1">
-                                </div>
-                                <button type="submit" class="btn btn-primary w-100">Add to Cart</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {% empty %}
-        <p class="animated-fade-slide delay-4">No food items available in this restaurant.</p>
-        {% endfor %}
-    </div>
+    {% empty %}
+    <p class="animated-fade-in">No food items available in this restaurant.</p>
+    {% endfor %}
+  </div>
 </div>
 {% endblock %}

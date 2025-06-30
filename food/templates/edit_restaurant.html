@@ -4,12 +4,54 @@
 {% block title %}Edit {{ restaurant.name }}{% endblock %}
 
 {% block content %}
-<div class="container my-5">
-    <h2 class="mb-4">Edit Restaurant Information</h2>
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">Update Restaurant</button>
-    </form>
+<style>
+    /* Animation: slide in from the right */
+    @keyframes slideInRight {
+        from {
+            opacity: 0;
+            transform: translateX(50px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .edit-card {
+        animation: slideInRight 0.8s ease;
+        background-color: #ffffff;
+        border-radius: 1rem;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
+        max-width: 700px;
+        margin: 80px auto;
+    }
+
+    .edit-card h2 {
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        text-align: center;
+    }
+
+    .edit-card form button[type="submit"] {
+        width: 100%;
+        padding: 0.75rem;
+        font-size: 1.1rem;
+    }
+
+    .edit-card form p {
+        margin-bottom: 1.2rem;
+    }
+</style>
+
+<div class="container">
+    <div class="edit-card">
+        <h2>Edit Restaurant Information</h2>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary btn-lg">Update Restaurant</button>
+        </form>
+    </div>
 </div>
 {% endblock %}

@@ -4,14 +4,78 @@
 {% block title %}Edit {{ food_item.name }}{% endblock %}
 
 {% block content %}
-<div class="container my-5">
-    <h2 class="mb-4 text-center fw-bold">Edit Food Item</h2>
-    <form method="post" enctype="multipart/form-data" class="mx-auto" style="max-width: 600px;">
-        {% csrf_token %}
-        <div class="mb-3">
-            {{ form.as_p }}
+<style>
+  .edit-food-container {
+    background-color: #f8f9fa;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 40px auto;
+  }
+
+  .edit-food-container h2 {
+    color: #343a40;
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: bold;
+  }
+
+  .form-group {
+    margin-bottom: 15px;
+  }
+
+  .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: #495057;
+  }
+
+  .form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    font-size: 16px;
+  }
+
+  .btn-update {
+    background-color: #007bff;
+    border: none;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    color: white;
+    width: 100%;
+    transition: background-color 0.3s ease;
+  }
+
+  .btn-update:hover {
+    background-color: #0056b3;
+  }
+
+  .form-container {
+    background-color: white;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+</style>
+
+<div class="edit-food-container">
+  <div class="form-container">
+    <h2>Edit Food Item</h2>
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      {% for field in form %}
+        <div class="form-group">
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
         </div>
-        <button type="submit" class="btn btn-primary w-100">Update Food Item</button>
+      {% endfor %}
+      <button type="submit" class="btn btn-update">Update Food Item</button>
     </form>
+  </div>
 </div>
 {% endblock %}

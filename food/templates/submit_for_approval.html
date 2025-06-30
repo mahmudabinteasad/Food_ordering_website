@@ -1,8 +1,45 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>Submit for Approval</h2>
-<p>Your restaurant and food items have been submitted for approval.</p>
-<p>You will be notified once the admin approves or declines your request.</p>
-<a href="{% url 'restaurant_login' %}" class="btn btn-primary">Go to your Restaurant</a>
+<style>
+    /* Animation: fade in from bottom */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .approval-card {
+        animation: fadeInUp 1s ease;
+        border-radius: 1rem;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        background-color: #fff;
+        padding: 2rem;
+        max-width: 600px;
+        margin: 100px auto;
+        text-align: center;
+    }
+
+    .approval-card h2 {
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+
+    .approval-card p {
+        color: #555;
+        margin-bottom: 1.5rem;
+    }
+</style>
+
+<div class="approval-card">
+    <h2>🎉 Submit for Approval</h2>
+    <p>Your restaurant and food items have been submitted for approval.</p>
+    <p>You will be notified once the admin approves or declines your request.</p>
+    <a href="{% url 'restaurant_login' %}" class="btn btn-primary btn-lg">Go to your Restaurant</a>
+</div>
 {% endblock %}
