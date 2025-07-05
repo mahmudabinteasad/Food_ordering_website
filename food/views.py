@@ -2,14 +2,15 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.db import connection, transaction
 from django.contrib.auth.hashers import check_password, make_password
 from django.contrib import messages
-from .forms import SignUpForm, RestaurantForm, FoodItemForm
+from .forms import SignUpForm, RestaurantForm, FoodItemForm, RestaurantReviewForm, FoodItemReviewForm
 from django.db.models import Q
-from .models import Restaurant, FoodItem, Cart, Customer, Order, OrderItem, PaymentMethod, DeliveryAddress, Preferences
+from .models import Restaurant, FoodItem, Cart, Customer, Order, OrderItem, PaymentMethod, DeliveryAddress, Preferences, Review
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 import json
+from django.views.decorators.http import require_POST
 
 def home(request):
     if 'customer_id' in request.session:
@@ -578,3 +579,54 @@ def delete_food_item(request, pk):
         food_item.delete()
         messages.success(request, f"Food item '{food_item.name}' has been deleted successfully.")
     return redirect('restaurant_page', restaurant_id=restaurant_id)
+
+def restaurant_detail(request, restaurant_id):
+    restaurant = get_object_or_404(Restaurant, pk=restaurant_id)
+    food_items = FoodItem.objects.filter(restaurant=restaurant)
+
+    # Fetch reviews for the restaurant and food items
+    restaurant_reviews = Review.objects.filter(restaurant=restaurant)
+    food_item_reviews = Review.objects.filter(food_item__in=food_items)
+
+    return render(request, 'restaurant_detail.html', {
+        'restaurant': restaurant,
+        'food_items': food_items,
+        'restaurant_reviews': restaurant_reviews,
+        'food_item_reviews': food_item_reviews,
+    })
+
+@login_required
+def add_restaurant_review(request, restaurant_id):
+    if request.method == 'POST':
+        restaurant = get_object_or_404(Restaurant, pk=restaurant_id)
+        rating = request.POST.get('rating')
+        if rating:
+            Review.objects.create(
+                user=request.user,
+                restaurant=restaurant,
+                rating=rating,
+                review_text=request.POST.get('review_text', '')
+            )
+            messages.success(request, 'Your review has been submitted successfully!')
+        else:
+            messages.error(request, 'Please select a rating.')
+
+    return redirect('menu', restaurant_id=restaurant_id)
+
+@login_required
+def add_food_item_review(request, food_item_id):
+    if request.method == 'POST':
+        food_item = get_object_or_404(FoodItem, pk=food_item_id)
+        rating = request.POST.get('rating')
+        if rating:
+            Review.objects.create(
+                user=request.user,
+                food_item=food_item,
+                rating=rating,
+                review_text=request.POST.get('review_text', '')
+            )
+            messages.success(request, 'Your review has been submitted successfully!')
+        else:
+            messages.error(request, 'Please select a rating.')
+
+    return redirect('menu', restaurant_id=food_item.restaurant.restaurant_id)

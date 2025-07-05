@@ -45,6 +45,7 @@
                     {% endif %}
                     <div class="card-body d-flex flex-column">
                         <h5 class="card-title">{{ food_item.name }}</h5>
+                        <p class="card-subtitle text-primary mb-2">🍽️ {{ food_item.restaurant.name }}</p>
                         <p class="card-text text-muted flex-grow-1">{{ food_item.description }}</p>
                         <p class="card-text font-weight-bold mb-2">$ {{ food_item.price }}</p>
                         <button class="btn btn-outline-success btn-sm mt-auto" data-toggle="modal" data-target="#foodItemModal{{ food_item.food_id }}">

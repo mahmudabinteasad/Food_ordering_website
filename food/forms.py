@@ -1,5 +1,6 @@
 from django import forms
 from .models import Customer, Restaurant, FoodItem
+from .models import Review
 
 class SignUpForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput())
@@ -26,3 +27,13 @@ class FoodItemForm(forms.ModelForm):
     class Meta:
         model = FoodItem
         fields = ['name', 'price', 'description', 'image', 'special_instructions']
+
+class RestaurantReviewForm(forms.ModelForm):
+    class Meta:
+        model = Review
+        fields = ['rating', 'review_text']
+
+class FoodItemReviewForm(forms.ModelForm):
+    class Meta:
+        model = Review
+        fields = ['rating', 'review_text']
