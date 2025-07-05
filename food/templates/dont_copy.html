@@ -1,0 +1,13 @@
+{% extends 'base_logged_in.html' %}
+{% load static %}
+
+{% block title %}Don't Copy Me{% endblock %}
+
+{% block content %}
+<div class="container text-center py-5">
+  <h1 class="text-danger mb-4">😈 If you dare to copy this website...</h1>
+  <img src="{% static 'images/joking.jpg' %}" alt="Funny Warning" class="img-fluid rounded shadow mb-4" style="max-width: 500px;">
+  <p class="text-danger mb-4" style="font-size: 2rem;">I’ll appear in your nightmares with a copyright lawsuit! 💀 Just kidding... but seriously, don't copy.</p>
+  <a href="{% url 'home' %}" class="btn btn-primary mt-3">Go Back Home</a>
+</div>
+{% endblock %}

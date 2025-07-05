@@ -630,3 +630,6 @@ def add_food_item_review(request, food_item_id):
             messages.error(request, 'Please select a rating.')
 
     return redirect('menu', restaurant_id=food_item.restaurant.restaurant_id)
+
+def dont_copy(request):
+    return render(request, 'dont_copy.html')
